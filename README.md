@@ -8,7 +8,10 @@ refer to https://nju-projectn.github.io/ics-pa-gitbook/ics2024/
 
 To initialize, run
 ```bash
-bash init.sh subproject-name
+git clone -b 2024  git@github.com:CHZarles/ics2024.git
+git branch -m master
+bash init.sh nemu
+bash init.sh abstract-machine
 ```
 See `init.sh` for more details.
 
