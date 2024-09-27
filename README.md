@@ -20,3 +20,26 @@ The following subprojects/components are included. Some of them are not fully im
 * [Abstract-Machine](https://github.com/NJU-ProjectN/abstract-machine)
 * [Nanos-lite](https://github.com/NJU-ProjectN/nanos-lite)
 * [Navy-apps](https://github.com/NJU-ProjectN/navy-apps)
+
+# pa1 record
+```
+# generate compile_command.json
+pip install compiledb
+cd ./nemu 
+compiledb make 
+
+ref:
+    https://pypi.org/project/compiledb/
+
+# install node.js for copilot chat 
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+export http_proxy=http://your_ip:7890
+export https_proxy=https://your_ip:7890
+export NVM_NODEJS_ORG_MIRROR=http://nodejs.org/dist
+nvm list-remote
+nvm install ...
+
+ref:
+    https://nodejs.org/en/download/package-manager
+
+```
