@@ -72,10 +72,29 @@ static int step_n(char *args) {
   Log("Call step_n(%p)", (void *)args);
   int steps;
   Assert(string_to_int(args, &steps) == 0, "Call string_to_int fail");
-  Log("run %d steps", steps);
+  Log("Run si %d", steps);
   // 2. call
   cpu_exec(steps);
 
+  return 0;
+}
+
+// info w, info r
+static int info_some(char *args) {
+
+  Log("Call info_some(%p)", (void *)args);
+  // 1. parse args
+  size_t args_len = strlen(args);
+  Assert(args_len == 1, "Only support info w or info r");
+  char info_type = args[0];
+  Assert(info_type == 'r' || info_type == 'w', "Only support info w or info r");
+  Log("Run info %c", info_type);
+  if (info_type == 'r') {
+    isa_reg_display();
+  } else if (info_type == 'w') {
+    // TODO: do it after finish watch point
+    return 0;
+  }
   return 0;
 }
 
@@ -92,6 +111,7 @@ static struct {
 
     /* TODO: Add more commands */
     {"si", "Run N (default 1) steps", step_n},
+    {"info", "display register or display watch point", info_some},
 
 };
 

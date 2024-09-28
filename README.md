@@ -166,3 +166,45 @@ int main() {
 }
 
 ```
+
+## command si [N] 
+
+
+这里每次单步执行之后, 终端打印出来的是指令和 init.c 里面的数组的值是一致的
+```
+
+[src/monitor/monitor.c:34 welcome] Build time: 22:47:31, Sep 28 2024
+Welcome to riscv32-NEMU!
+For help, type "help"
+(nemu) si 1
+[src/monitor/sdb/sdb.c:72 step_n] Call step_n(0x587fdb875853)
+[src/monitor/sdb/sdb.c:59 string_to_int] Call string_to_int(args = 0x587fdb875853, steps = 0x7ffd94175918)
+[src/monitor/sdb/sdb.c:75 step_n] run 1 steps
+0x80000000: 00 00 02 97 auipc   t0, 0
+(nemu) si
+[src/monitor/sdb/sdb.c:72 step_n] Call step_n((nil))
+[src/monitor/sdb/sdb.c:59 string_to_int] Call string_to_int(args = (nil), steps = 0x7ffd94175918)
+[src/monitor/sdb/sdb.c:62 string_to_int] *steps <- 1
+[src/monitor/sdb/sdb.c:75 step_n] run 1 steps
+0x80000004: 00 02 88 23 sb      zero, 0x10(t0)
+(nemu) 
+(nemu) si
+[src/monitor/sdb/sdb.c:72 step_n] Call step_n((nil))
+[src/monitor/sdb/sdb.c:59 string_to_int] Call string_to_int(args = (nil), steps = 0x7ffd94175918)
+[src/monitor/sdb/sdb.c:62 string_to_int] *steps <- 1
+[src/monitor/sdb/sdb.c:75 step_n] run 1 steps
+0x80000008: 01 02 c5 03 lbu     a0, 0x10(t0)
+(nemu) si
+[src/monitor/sdb/sdb.c:72 step_n] Call step_n((nil))
+[src/monitor/sdb/sdb.c:59 string_to_int] Call string_to_int(args = (nil), steps = 0x7ffd94175918)
+[src/monitor/sdb/sdb.c:62 string_to_int] *steps <- 1
+[src/monitor/sdb/sdb.c:75 step_n] run 1 steps
+0x8000000c: 00 10 00 73 ebreak
+[src/cpu/cpu-exec.c:120 cpu_exec] nemu: HIT GOOD TRAP at pc = 0x8000000c
+[src/cpu/cpu-exec.c:88 statistic] host time spent = 771 us
+[src/cpu/cpu-exec.c:89 statistic] total guest instructions = 4
+[src/cpu/cpu-exec.c:90 statistic] simulation frequency = 5,188 inst/s
+(nemu) 
+
+
+```
