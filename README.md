@@ -43,3 +43,126 @@ ref:
     https://nodejs.org/en/download/package-manager
 
 ```
+## readline example
+```c++
+// gcc readline_example.c -o readline -lreadline
+
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+  char *input;
+
+  while (1) {
+    // 提示用户输入
+    input = readline("Please enter a line of text (type 'exit' to quit): ");
+
+    // 检查输入是否成功
+    if (input) {
+      // 如果输入是 "exit"，则退出循环
+      if (strcmp(input, "exit") == 0) {
+        free(input);
+        break;
+      }
+
+      // 打印用户输入
+      printf("You entered: %s\n", input);
+
+      // 将输入添加到历史记录
+      add_history(input);
+
+      // 释放分配的内存
+      free(input);
+    } else {
+      printf("Error reading input.\n");
+      break; // 读取错误，退出循环
+    }
+  }
+
+  return 0;
+}
+
+
+```
+
+## strtok sample
+```c++
+// gcc -o strtok_example strtok_example.c
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+  char str[] = "apple,banana,cherry,date";
+  const char *delim = ",";
+  char *token;
+
+  // 获取第一个标记
+  token = strtok(str, delim);
+
+  // 遍历所有标记
+  while (token != NULL) {
+    printf("Token: %s\n", token);
+    // 获取下一个标记
+    token = strtok(NULL, delim);
+  }
+
+  return 0;
+}
+
+```
+
+## strlen strcpy sample
+```c++
+//gcc -o strcpy_strlen_example strcpy_strlen_example.c
+
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+  const char *source = "Hello, World!";
+  char destination[50]; // 确保目标数组足够大
+
+  // 使用 strcpy 复制字符串
+  strcpy(destination, source);
+
+  // 使用 strlen 计算字符串长度
+  size_t length = strlen(destination);
+
+  // 输出结果
+  printf("Source: %s\n", source);
+  printf("Destination: %s\n", destination);
+  printf("Length of Destination: %zu\n", length);
+
+  return 0;
+}
+
+```
+
+## sscanf example 
+```c++
+// gcc -o sscanf_example sscanf_example.c
+#include <stdio.h>
+
+int main() {
+  const char *input = "John Doe 25";
+  char name[50];
+  int age;
+
+  // 使用 sscanf 解析字符串
+  int items_parsed = sscanf(input, "%49s %49s %d", name, name + 50, &age);
+
+  // 检查解析结果
+  if (items_parsed == 3) {
+    printf("Name: %s %s\n", name, name + 50);
+    printf("Age: %d\n", age);
+  } else {
+    printf("Failed to parse input.\n");
+  }
+
+  return 0;
+}
+
+```
