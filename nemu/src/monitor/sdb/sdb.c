@@ -91,7 +91,7 @@ static struct {
     {"q", "Exit NEMU", cmd_q},
 
     /* TODO: Add more commands */
-    {"si [N]", "Run N (default 1) steps", step_n},
+    {"si", "Run N (default 1) steps", step_n},
 
 };
 
