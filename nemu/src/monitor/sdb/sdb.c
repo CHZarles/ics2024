@@ -69,7 +69,7 @@ static int string_to_int(const char *args, int *steps) {
 }
 static int step_n(char *args) {
   // 1. parse args to int
-  Log("Call step_n(%p)", (void *)&args);
+  Log("Call step_n(%p)", (void *)args);
   int steps;
   Assert(string_to_int(args, &steps) == 0, "Call string_to_int fail");
 
