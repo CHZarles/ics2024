@@ -56,7 +56,7 @@ static int cmd_q(char *args) { return -1; }
 static int string_to_int(const char *args, int *steps) {
   // 检查输入指针是否为空
   Assert(steps != NULL, "result should not be NULL");
-  Log("Call string_to_int(args = %p, steps = %p)", (void *)&args,
+  Log("Call string_to_int(args = %p, steps = %p)", (void *)args,
       (void *)&steps);
   if (args == NULL) {
     Log("*steps <- 1");
