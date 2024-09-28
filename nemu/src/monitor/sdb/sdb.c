@@ -72,7 +72,7 @@ static int step_n(char *args) {
   Log("Call step_n(%p)", (void *)args);
   int steps;
   Assert(string_to_int(args, &steps) == 0, "Call string_to_int fail");
-
+  Log("run %d steps", steps);
   // 2. call
   cpu_exec(steps);
 
