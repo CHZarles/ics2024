@@ -31,7 +31,7 @@ void isa_reg_display() {
     // ref:
     // https://stackoverflow.com/questions/31026000/gdb-info-registers-command-second-column-of-output
     // name   value(hex)   value(decimal)
-    printf("%s   %-10x    %-10d\n", reg_name(i), gpr(i), gpr(i));
+    printf("%-10s   %-10x    %-10d\n", reg_name(i), gpr(i), gpr(i));
   }
 }
 
