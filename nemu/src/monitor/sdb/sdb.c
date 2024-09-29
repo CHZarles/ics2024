@@ -122,7 +122,7 @@ static int display_mem(char *args) {
         break;
       }
       int val = paddr_read(start_addr + k, 4);
-      printf("0x%02x ", val);
+      printf("0x%08x ", val);
     }
     printf("\n");
     start_addr += 4;
