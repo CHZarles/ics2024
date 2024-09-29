@@ -112,7 +112,7 @@ static int display_mem(char *args) {
   // 2. display memory
   for (int i = 0; i < lines; ++i) {
     // display addr
-    printf("%x : ", *guest_to_host(start_addr));
+    printf("%p : ", guest_to_host(start_addr));
     for (int k = 0; k < 4; ++k) {
       if (!likely(start_addr + k))
         break;
