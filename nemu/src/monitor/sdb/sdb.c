@@ -121,8 +121,8 @@ static int display_mem(char *args) {
       if (!likely(in_pmem(start_addr + k))) {
         break;
       }
-      int val = paddr_read(start_addr + k, 4);
-      printf("0x%08x ", val);
+      int val = paddr_read(start_addr + k, 1);
+      printf("0x%02x ", val);
     }
     printf("\n");
     start_addr += 4;
