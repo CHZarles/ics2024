@@ -112,13 +112,11 @@ static int display_mem(char *args) {
   // 2. display memory
   for (int i = 0; i < lines; ++i) {
     // display addr
-    printf("%x: ", start_addr);
+    printf("0x%08x: ", start_addr);
     for (int k = 0; k < 4; ++k) {
       if (!likely(start_addr + k))
         break;
-      printf("%x ", paddr_read(start_addr + k, 1));
-      printf("|");
-      printf("%d ", paddr_read(start_addr + k, 1));
+      printf("0x%02x ", paddr_read(start_addr + k, 1));
     }
     printf("\n");
     start_addr += 4;
