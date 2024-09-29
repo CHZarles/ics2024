@@ -109,6 +109,10 @@ static int display_mem(char *args) {
   int ret = sscanf(args, "%u   %x", &lines, &start_addr);
   Assert(ret == 2, "Received unvaild parameters");
   Log("Run x %d 0x%x", lines, start_addr);
+  if (!likely(in_pmem(start_addr))) {
+    Log("address 0x%x is out of bound", start_addr);
+    return 0;
+  }
   // 2. display memory
   for (int i = 0; i < lines; ++i) {
     // display addr
