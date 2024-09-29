@@ -17,6 +17,7 @@
 #include "debug.h"
 #include <cpu/cpu.h>
 #include <isa.h>
+#include <memory/paddr.h> // NOTE: for pa1 assignmen
 #include <readline/history.h>
 #include <readline/readline.h>
 #include <time.h>
@@ -98,6 +99,31 @@ static int info_some(char *args) {
   return 0;
 }
 
+// x N EXPT
+static int display_mem(char *args) {
+
+  Log("Call display_mem(%p)", (void *)args);
+  // 1. receive 2 parameters
+  unsigned int lines;
+  paddr_t start_addr;
+  int ret = sscanf(args, "%u%*s%x", &lines, &start_addr);
+  Assert(ret == 2, "Received unvaild parameters");
+  Log("Run x %d %x", lines, start_addr);
+  // 2. display memory
+  for (int i = 0; i < lines; ++i) {
+    // display addr
+    printf("%x : ", *guest_to_host(start_addr));
+    for (int k = 0; k < 4; ++k) {
+      if (!likely(start_addr + k))
+        break;
+      printf("%x ", paddr_read(start_addr + k, 1));
+    }
+    printf("\n");
+    start_addr += 4;
+  }
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -110,8 +136,10 @@ static struct {
     {"q", "Exit NEMU", cmd_q},
 
     /* TODO: Add more commands */
-    {"si", "Run N (default 1) steps", step_n},
-    {"info", "display register or display watch point", info_some},
+    {"si", "si [N] , Run N (default 1) steps", step_n},
+    {"info", "info [r | w] , display register / display watch point",
+     info_some},
+    {"x", "x N EXPR , display memory range from [EXPR, EXPR + N]", display_mem},
 
 };
 
