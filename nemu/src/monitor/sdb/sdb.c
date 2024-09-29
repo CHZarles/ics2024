@@ -114,8 +114,10 @@ static int display_mem(char *args) {
     // display addr
     printf("0x%08x: ", start_addr);
     for (int k = 0; k < 4; ++k) {
-      if (!likely(start_addr + k))
+      if (!likely(start_addr + k)) {
+        Log("Out of bound");
         break;
+      }
       printf("0x%02x ", paddr_read(start_addr + k, 1));
     }
     printf("\n");
