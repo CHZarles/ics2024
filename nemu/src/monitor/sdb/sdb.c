@@ -108,7 +108,7 @@ static int display_mem(char *args) {
   paddr_t start_addr;
   int ret = sscanf(args, "%u   %x", &lines, &start_addr);
   Assert(ret == 2, "Received unvaild parameters");
-  Log("Run x %d %x", lines, start_addr);
+  Log("Run x %d 0x%x", lines, start_addr);
   // 2. display memory
   for (int i = 0; i < lines; ++i) {
     // display addr
