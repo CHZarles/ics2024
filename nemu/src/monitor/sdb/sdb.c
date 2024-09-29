@@ -117,7 +117,7 @@ static int display_mem(char *args) {
   for (int i = 0; i < lines; ++i) {
     // display addr
     printf("0x%08x: ", start_addr);
-    // 低地址的通常显示在右边
+    // 低地址的通常显示在右边, 所以循环的开始先打印高地址
     for (int k = 3; k >= 0; --k) {
       if (!likely(in_pmem(start_addr + k))) {
         break;
