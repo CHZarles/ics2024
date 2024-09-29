@@ -117,11 +117,11 @@ static int display_mem(char *args) {
   for (int i = 0; i < lines; ++i) {
     // display addr
     printf("0x%08x: ", start_addr);
-    for (int k = 0; k < 4; ++k) {
+    for (int k = 0; k < 1; ++k) {
       if (!likely(in_pmem(start_addr + k))) {
         break;
       }
-      int val = paddr_read(start_addr + k, 1);
+      int val = paddr_read(start_addr + k, 4);
       printf("0x%02x ", val);
     }
     printf("\n");
