@@ -117,7 +117,7 @@ static int display_mem(char *args) {
   for (int i = 0; i < lines; ++i) {
     // display addr
     printf("0x%08x: ", start_addr);
-    for (int k = 0; k < 1; ++k) {
+    for (int k = 0; k < 4; ++k) {
       if (!likely(in_pmem(start_addr + k))) {
         break;
       }
