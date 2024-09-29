@@ -117,12 +117,13 @@ static int display_mem(char *args) {
   for (int i = 0; i < lines; ++i) {
     // display addr
     printf("0x%08x: ", start_addr);
-    for (int k = 0; k < 4; ++k) {
+    // 低地址的通常显示在右边
+    for (int k = 4; k >= 0; --k) {
       if (!likely(in_pmem(start_addr + k))) {
         break;
       }
       int val = paddr_read(start_addr + k, 1);
-      printf("0x%02x ", val);
+      printf("%02x ", val);
     }
     printf("\n");
     start_addr += 4;
