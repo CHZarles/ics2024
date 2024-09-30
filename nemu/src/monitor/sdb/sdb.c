@@ -131,6 +131,13 @@ static int display_mem(char *args) {
   return 0;
 }
 
+// p EXPR
+static int parse_expr(char *args) {
+  bool success = false;
+  expr(args, &success);
+  Assert(success, "Invalid expression");
+  return 0;
+}
 static int cmd_help(char *args);
 
 static struct {
@@ -147,7 +154,7 @@ static struct {
     {"info", "info [r | w] , display register / display watch point",
      info_some},
     {"x", "x N EXPR , display memory range from [EXPR, EXPR + N]", display_mem},
-
+    {"p", "p EXPR , parse expression", parse_expr},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
