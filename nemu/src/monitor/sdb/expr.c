@@ -41,8 +41,9 @@ static struct rule {
 
     {" +", TK_NOTYPE},        // spaces
     {"\\+", '+'},             // plus
-    {"\\-", '-'},             // subtraction
+    {"-", '-'},               // subtraction
     {"\\*", '*'},             // times
+    {"/", '/'},               // times
     {"\\(", '('},             // (
     {"\\)", ')'},             // )
     {"[0-9][0-9]*", NUMBERS}, // numbers
