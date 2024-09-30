@@ -125,6 +125,10 @@ int main(int argc, char *argv[]) {
     /* printf("generate random expr success\n"); */
     // don't forget this
     buf[buf_len] = '\0';
+    // NOTE: fliter the expression with only one number
+    if (buf_len == 1) {
+      continue;
+    }
     sprintf(code_buf, code_format, buf);
     /* printf("buf_len: %u\n", buf_len); */
     FILE *fp = fopen("/tmp/.code.c", "w");
