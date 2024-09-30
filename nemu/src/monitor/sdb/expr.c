@@ -44,8 +44,8 @@ static struct rule {
     {"-", '-'},               // subtraction
     {"\\*", '*'},             // times
     {"/", '/'},               // times
-    {"\\(", '('},             // (
-    {"\\)", ')'},             // )
+    {"(", '('},               // (
+    {")", ')'},               // )
     {"[0-9][0-9]*", NUMBERS}, // numbers
     {"==", TK_EQ},            // equal
 };
@@ -135,7 +135,7 @@ static bool make_token(char *e) {
           break;
         }
         case '/': {
-          Log("detect %d th token -> //", nr_token);
+          Log("detect %d th token -> /", nr_token);
           Token *tk = &tokens[nr_token++];
           tk->type = '/';
           tk->str[0] = '/';
