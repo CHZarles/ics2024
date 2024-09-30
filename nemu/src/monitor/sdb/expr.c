@@ -13,6 +13,7 @@
  * See the Mulan PSL v2 for more details.
  ***************************************************************************************/
 
+#include "debug.h"
 #include <isa.h>
 
 /* We use the POSIX regex functions to process regular expressions.
@@ -133,24 +134,26 @@ static bool make_token(char *e) {
           break;
         }
         case NUMBERS: {
-          Log("detect %d th token -> NUMBERS(%.*s)", nr_token, substr_len,
-              substr_start);
+          Log("detect NUMBERS");
           if (substr_len < 50) {
             Token *tk = &tokens[nr_token++];
             tk->type = NUMBERS;
             // record str
             memcpy(tk->str, substr_start, substr_len);
+            tk->str[substr_len] = '\0';
+            Log("detect token -> %s ", tk->str);
           } else {
             // devide it into several tokens
             // target = part1 * 10^N * 10^M * .. + part2 * 10^N1 * ... + ...
-
+            // add token (
+            int group_st = nr_token;
             Token *tk = &tokens[nr_token++];
             tk->type = '(';
             char *subsubstr_start = substr_start;
             // while until reach the end
             for (int i = position; i < position + substr_len; i += 50) {
               if (i != position) {
-
+                // add token +
                 Token *tk = &tokens[nr_token++];
                 tk->type = '+';
               }
@@ -160,6 +163,8 @@ static bool make_token(char *e) {
               tk->type = NUMBERS;
               if (subsubstr_len < 50) { // last one
                 memcpy(tk->str, subsubstr_start, subsubstr_len);
+                tk->str[subsubstr_len] = '\0';
+
               } else { // not last one
                 memcpy(tk->str, subsubstr_start, 50);
                 // divde 10^N MIN.
@@ -184,6 +189,14 @@ static bool make_token(char *e) {
                 }
               }
             }
+            // add token (
+            tk = &tokens[nr_token++];
+            tk->type = ')';
+            int group_ed = nr_token;
+            // display
+            for (int i = group_st; i < group_ed; ++i) {
+              printf("%s", tokens[i].str);
+            }
           }
           break;
         }
@@ -204,6 +217,113 @@ static bool make_token(char *e) {
   return true;
 }
 
+// 左右闭区间
+bool check_parentheses(int p, int q) {
+  int count = 0;
+  if (tokens[p].type != '(' || tokens[q].type != ')') {
+    return false;
+  }
+  for (int i = p; i <= q; ++i) {
+    if (tokens[i].type == '(') {
+      count++;
+    } else if (tokens[i].type == ')') {
+      count--;
+    }
+    if (count == 0 && i != q) {
+      return false;
+    }
+  }
+  return true;
+}
+
+#define MAX_OP 300
+// Helper function to check if a token is an operator
+bool is_operator(int type) {
+  return type == '+' || type == '-' || type == '*' || type == '/';
+}
+// Helper function to get the priority of an operator
+int get_operator_priority(int type) {
+  switch (type) {
+  case '+':
+  case '-':
+    return 1;
+  case '*':
+  case '/':
+    return 2;
+  default:
+    return MAX_OP;
+  }
+}
+// find out main operator
+// return the position of 主运算符 in the token expression;
+int find_main_op(int p, int q) {
+  // 1. 非运算符的token不是主运算符.
+  // 2. 出现在一对括号中的token不是主运算符.
+  // 3. 注意到这里不会出现有括号包围整个表达式的情况
+  // 4. 主运算符的优先级在表达式中是最低的.
+  // 这是因为主运算符是最后一步才进行的运算符.
+  // 5. 当有多个运算符的优先级都是最低时, 根据结合性,
+  // 最后被结合的运算符才是主运算符.
+  int main_op = -1;
+  int min_priority = MAX_OP; // ascall range < 300
+  int bracket_count = 0;
+
+  for (int i = p; i <= q; i++) {
+    if (tokens[i].type == '(') {
+      bracket_count++;
+    } else if (tokens[i].type == ')') {
+      bracket_count--;
+    } else if (bracket_count == 0 && is_operator(tokens[i].type)) {
+      int priority = get_operator_priority(tokens[i].type);
+      if (priority <= min_priority) {
+        min_priority = priority;
+        main_op = i;
+      }
+    }
+  }
+
+  return main_op;
+}
+
+// 左右闭区间
+uint32_t eval(int p, int q) {
+
+  if (p > q) {
+    Assert(p > q, "Error eval: p > q");
+    return 0;
+  } else if (p == q) {
+    /* Single token.
+     * For now this token should be a number.
+     * Return the value of the number.
+     */
+    // 从数值类型的角度来说，似乎不存在一个数位数会大于50
+    // 实验规定数值是整数类型
+    return (double)atoi(tokens[p].str);
+
+  } else if (check_parentheses(p, q) == true) {
+    /* The expression is surrounded by a matched pair of parentheses.
+     * If that is the case, just throw away the parentheses.
+     */
+    return eval(p + 1, q - 1);
+  } else {
+    /* We should do more things here. */
+    int op = find_main_op(p, q);
+    uint32_t val1 = eval(p, op - 1);
+    uint32_t val2 = eval(op + 1, q);
+    switch (tokens[op].type) {
+    case '+':
+      return val1 + val2;
+    case '-':
+      return val1 - val2;
+    case '*':
+      return val1 * val2;
+    case '/':
+      return val1 / val2;
+    default:
+      assert(0);
+    }
+  }
+}
 word_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
@@ -211,7 +331,9 @@ word_t expr(char *e, bool *success) {
   }
 
   /* TODO: Insert codes to evaluate the expression. */
-  TODO();
+  /* TODO(); */
+  int p = 0, q = nr_token - 1;
+  eval(p, q);
 
   return 0;
 }
