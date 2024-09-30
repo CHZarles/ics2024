@@ -134,9 +134,9 @@ static int display_mem(char *args) {
 // p EXPR
 static int parse_expr(char *args) {
   bool success = false;
-  expr(args, &success);
+  word_t ret = expr(args, &success);
   Assert(success, "Invalid expression");
-  return 0;
+  return ret;
 }
 static int cmd_help(char *args);
 
