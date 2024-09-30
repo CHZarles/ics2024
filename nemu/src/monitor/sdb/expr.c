@@ -44,7 +44,7 @@ static struct rule {
     {"-", '-'},               // subtraction
     {"\\*", '*'},             // times
     {"/", '/'},               // times
-    {"(", '('},               // (
+    {"\(", '('},              // (
     {")", ')'},               // )
     {"[0-9][0-9]*", NUMBERS}, // numbers
     {"==", TK_EQ},            // equal
