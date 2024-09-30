@@ -45,7 +45,7 @@ static struct rule {
     {"\\*", '*'},             // times
     {"\\(", '('},             // (
     {"\\)", ')'},             // )
-    {"[1-9][0-9]*", NUMBERS}, // numbers
+    {"[0-9][0-9]*", NUMBERS}, // numbers
     {"==", TK_EQ},            // equal
 };
 
@@ -292,7 +292,7 @@ int find_main_op(int p, int q) {
   return main_op;
 }
 // malloc a global str
-char message[3000];
+char message[64435];
 char *tokens_str(int p, int q) {
   int len = 0;
   for (int i = p; i <= q; ++i) {
