@@ -148,12 +148,14 @@ void init_monitor(int argc, char *argv[]) {
   welcome();
 
   // 重定向标准输入到 input.txt
-  FILE *file = freopen("input.txt", "r", stdin);
-  if (file == NULL) {
-    perror("freopen() failed");
-    return;
-  }
+  /* FILE *file = freopen("input.txt", "r", stdin); */
+  /* if (file == NULL) { */
+  /*   perror("freopen() failed"); */
+  /*   return; */
+  /* } */
   /* fclose(stdin); */
+  // case 1:
+  // p ((2*7*(((((2-(8)/8)))))+((4)*5)+1))
 }
 #else // CONFIG_TARGET_AM
 static long load_img() {
