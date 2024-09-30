@@ -77,6 +77,9 @@ typedef struct token {
 static Token tokens[32] __attribute__((used)) = {};
 static int nr_token __attribute__((used)) = 0;
 
+#define MIN(i, j) (((i) < (j)) ? (i) : (j))
+#define MAX(i, j) (((i) > (j)) ? (i) : (j))
+
 static bool make_token(char *e) {
   int position = 0;
   int i;
@@ -143,17 +146,42 @@ static bool make_token(char *e) {
 
             Token *tk = &tokens[nr_token++];
             tk->type = '(';
-            int st_idx = position;
             char *subsubstr_start = substr_start;
             // while until reach the end
-            for (int i = position; i < position + substr_len; += 50) {
+            for (int i = position; i < position + substr_len; i += 50) {
+              if (i != position) {
+
+                Token *tk = &tokens[nr_token++];
+                tk->type = '+';
+              }
               // divde part i
-              int subsubstr_len = min(i + 50, position + substr_len) - i;
+              int subsubstr_len = MIN(i + 50, position + substr_len) - i;
               Token *tk = &tokens[nr_token++];
               tk->type = NUMBERS;
               if (subsubstr_len < 50) { // last one
-
                 memcpy(tk->str, subsubstr_start, subsubstr_len);
+              } else { // not last one
+                memcpy(tk->str, subsubstr_start, 50);
+                // divde 10^N MIN.
+                int dump = i + 50;
+                while (dump < position + substr_len) {
+                  // add token  *
+                  Token *tk = &tokens[nr_token++];
+                  tk->type = '*';
+
+                  // calc len
+                  int len = MIN(dump + 50, position + substr_len) - dump;
+
+                  // add token 100000
+                  tk = &tokens[nr_token++];
+                  tk->type = NUMBERS;
+                  tk->str[0] = '1';
+                  for (int i = 1; i < len; ++i)
+                    tk->str[i] = '0';
+                  tk->str[len] = '\0';
+
+                  dump += 50;
+                }
               }
             }
           }
