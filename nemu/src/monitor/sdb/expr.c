@@ -218,11 +218,13 @@ static bool make_token(char *e) {
 }
 
 // 左右闭区间
-bool check_parentheses(int p, int q) {
+// 0 符合 ( < expr > )
+// - 不符合 < expr > 而且不是一个正确的表达式 ，如：(4 + 3)) * ((2 - 1)
+// 1 不符合 < expr > 但是一个正确的表达式，如：(4 + 3) * (2 - 1)
+#define EX
+int check_parentheses(int p, int q) {
   int count = 0;
-  if (tokens[p].type != '(' || tokens[q].type != ')') {
-    return false;
-  }
+  bool correctd_format = (tokens[p].type == '(' && tokens[q].type == ')');
   for (int i = p; i <= q; ++i) {
     if (tokens[i].type == '(') {
       count++;
@@ -230,10 +232,15 @@ bool check_parentheses(int p, int q) {
       count--;
     }
     if (count == 0 && i != q) {
-      return false;
+      correctd_format = false;
     }
   }
-  return true;
+  if (count != 0) // 不正确的表达式
+    return -1;
+  if (correctd_format) // 符合 ( < expr > ), 是一个正确的表达式
+    return 0;
+  else // 不符合 < expr > 但是一个正确的表达式
+    return 1;
 }
 
 #define MAX_OP 300
@@ -284,10 +291,19 @@ int find_main_op(int p, int q) {
 
   return main_op;
 }
-
+// malloc a global str
+char message[3000];
+char *tokens_str(int p, int q) {
+  int len = 0;
+  for (int i = p; i <= q; ++i) {
+    len += sprintf(message + len, "%s", tokens[i].str);
+  }
+  message[len] = '\0';
+  return message;
+}
 // 左右闭区间
 uint32_t eval(int p, int q) {
-
+  Log("Given p = %d, q = %d , eval %s", p, q, tokens_str(p, q));
   if (p > q) {
     Assert(p > q, "Error eval: p > q");
     return 0;
@@ -299,8 +315,10 @@ uint32_t eval(int p, int q) {
     // 从数值类型的角度来说，似乎不存在一个数位数会大于50
     // 实验规定数值是整数类型
     return (double)atoi(tokens[p].str);
-
-  } else if (check_parentheses(p, q) == true) {
+  }
+  int state = check_parentheses(p, q);
+  Assert(state != -1, "Found an unvaild expr");
+  if (state == 0) {
     /* The expression is surrounded by a matched pair of parentheses.
      * If that is the case, just throw away the parentheses.
      */
@@ -320,6 +338,7 @@ uint32_t eval(int p, int q) {
     case '/':
       return val1 / val2;
     default:
+      Log("Unknow op : %c", tokens[op].type);
       assert(0);
     }
   }
