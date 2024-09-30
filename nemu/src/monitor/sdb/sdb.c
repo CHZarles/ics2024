@@ -105,8 +105,11 @@ static int display_mem(char *args) {
   Log("Call display_mem(%p)", (void *)args);
   // 1. receive 2 parameters
   unsigned int lines;
-  paddr_t start_addr;
-  int ret = sscanf(args, "%u   %x", &lines, &start_addr);
+  char expr_[65536];
+  int ret = sscanf(args, "%u   %s", &lines, expr_);
+  bool success;
+  paddr_t start_addr = expr(expr_, &success);
+  Assert(success, "Parse expr fail");
   Assert(ret == 2, "Received unvaild parameters");
   Log("Run x %d 0x%x", lines, start_addr);
   if (!likely(in_pmem(start_addr))) {
