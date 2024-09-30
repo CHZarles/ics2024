@@ -107,7 +107,6 @@ int main(int argc, char *argv[]) {
     gen_rand_expr();
     // don't forget this
     buf[buf_len] = '\0';
-    // display buf 's length
     sprintf(code_buf, code_format, buf);
 
     FILE *fp = fopen("/tmp/.code.c", "w");
@@ -126,7 +125,8 @@ int main(int argc, char *argv[]) {
     ret = fscanf(fp, "%d", &result);
     pclose(fp);
 
-    printf("%u %s\n", result, buf);
+    /* printf("%u %s\n", result, buf); */
+    printf("p %s\n", buf);
   }
   return 0;
 }
