@@ -142,6 +142,24 @@ static bool make_token(char *e) {
           tk->str[1] = '\0';
           break;
         }
+        case '(': {
+
+          Log("detect %d th token -> (", nr_token);
+          Token *tk = &tokens[nr_token++];
+          tk->type = '(';
+          tk->str[0] = '(';
+          tk->str[1] = '\0';
+          break;
+        }
+        case ')': {
+
+          Log("detect %d th token -> )", nr_token);
+          Token *tk = &tokens[nr_token++];
+          tk->type = ')';
+          tk->str[0] = ')';
+          tk->str[1] = '\0';
+          break;
+        }
         case NUMBERS: {
           Log("detect NUMBERS");
           if (substr_len < 50) {
