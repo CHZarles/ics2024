@@ -146,6 +146,14 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Display welcome message. */
   welcome();
+
+  // 重定向标准输入到 input.txt
+  FILE *file = freopen("input.txt", "r", stdin);
+  if (file == NULL) {
+    perror("freopen() failed");
+    return;
+  }
+  fclose(stdin);
 }
 #else // CONFIG_TARGET_AM
 static long load_img() {
