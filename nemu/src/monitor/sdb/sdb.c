@@ -94,6 +94,9 @@ static int info_some(char *args) {
     isa_reg_display();
   } else if (info_type == 'w') {
     // TODO: do it after finish watch point
+    // tranverse watch point
+
+    display_wp();
     return 0;
   }
   return 0;
