@@ -353,7 +353,7 @@ uint32_t eval(int p, int q) {
     return eval(p + 1, q - 1);
   } else {
     // DEBUG:
-    printf("p = %d, q = %d , %s\n", p, q, tokens_str(p, q));
+    /* printf("p = %d, q = %d , %s\n", p, q, tokens_str(p, q)); */
     /* We should do more things here. */
     int op = find_main_op(p, q);
     uint32_t val1 = eval(p, op - 1);
