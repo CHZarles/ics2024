@@ -19,12 +19,14 @@
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
+#include <readline/chardefs.h>
 #include <regex.h>
 
 enum {
   TK_NOTYPE = 256,
   TK_EQ,
-  NUMBERS = 255,
+  NUMBER,
+  HEX_NUMBER,
 
   /* TODO: Add more token types */
 
@@ -39,15 +41,16 @@ static struct rule {
      * Pay attention to the precedence level of different rules.
      */
 
-    {" +", TK_NOTYPE},        // spaces
-    {"\\+", '+'},             // plus
-    {"-", '-'},               // subtraction
-    {"\\*", '*'},             // times
-    {"/", '/'},               // times
-    {"\\(", '('},             // (
-    {"\\)", ')'},             // )
-    {"[0-9][0-9]*", NUMBERS}, // numbers
-    {"==", TK_EQ},            // equal
+    {" +", TK_NOTYPE},             // spaces
+    {"\\+", '+'},                  // plus
+    {"-", '-'},                    // subtraction
+    {"\\*", '*'},                  // times
+    {"/", '/'},                    // times
+    {"\\(", '('},                  // (
+    {"\\)", ')'},                  // )
+    {"[0-9][0-9]*", NUMBER},       // numbers
+    {"0x[0-9][0-9]*", HEX_NUMBER}, // hex numbers
+    {"==", TK_EQ},                 // equal
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -161,11 +164,11 @@ static bool make_token(char *e) {
           tk->str[1] = '\0';
           break;
         }
-        case NUMBERS: {
-          Log("detect NUMBERS");
+        case NUMBER: {
+          Log("detect NUMBER");
           if (substr_len < 50) {
             Token *tk = &tokens[nr_token++];
-            tk->type = NUMBERS;
+            tk->type = NUMBER;
             // record str
             memcpy(tk->str, substr_start, substr_len);
             tk->str[substr_len] = '\0';
@@ -188,7 +191,7 @@ static bool make_token(char *e) {
               // divde part i
               int subsubstr_len = MIN(i + 50, position + substr_len) - i;
               Token *tk = &tokens[nr_token++];
-              tk->type = NUMBERS;
+              tk->type = NUMBER;
               if (subsubstr_len < 50) { // last one
                 memcpy(tk->str, subsubstr_start, subsubstr_len);
                 tk->str[subsubstr_len] = '\0';
@@ -207,7 +210,7 @@ static bool make_token(char *e) {
 
                   // add token 100000
                   tk = &tokens[nr_token++];
-                  tk->type = NUMBERS;
+                  tk->type = NUMBER;
                   tk->str[0] = '1';
                   for (int i = 1; i < len; ++i)
                     tk->str[i] = '0';
@@ -225,6 +228,20 @@ static bool make_token(char *e) {
             for (int i = group_st; i < group_ed; ++i) {
               printf("%s", tokens[i].str);
             }
+          }
+          break;
+        }
+        case HEX_NUMBER: {
+          Log("detect HEX_NUMBER");
+          if (substr_len < 50) {
+            Token *tk = &tokens[nr_token++];
+            tk->type = HEX_NUMBER;
+            // record str
+            memcpy(tk->str, substr_start, substr_len);
+            tk->str[substr_len] = '\0';
+            Log("detect token -> %s ", tk->str);
+          } else {
+            Assert(0, "Hex number longer than 50 not support yet");
           }
           break;
         }
@@ -342,7 +359,13 @@ uint32_t eval(int p, int q) {
      */
     // 从数值类型的角度来说，似乎不存在一个数位数会大于50
     // 实验规定数值是整数类型
-    return (uint32_t)atoi(tokens[p].str);
+    if (tokens[p].type == NUMBER) {
+      return (uint32_t)atoi(tokens[p].str);
+    } else if (tokens[p].type == HEX_NUMBER) {
+      return (uint32_t)strtol(tokens[p].str, '\0', 16);
+    } else {
+      Assert(0, "Error eval: p == q");
+    }
   }
   int state = check_parentheses(p, q);
   Assert(state != -1, "Found an unvaild expr");
