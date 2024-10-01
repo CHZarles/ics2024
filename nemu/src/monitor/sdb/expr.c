@@ -453,7 +453,7 @@ uint32_t eval(int p, int q) {
     int op = find_main_op(p, q);
     // DEREFERENCE 这个操作符的优先级是最低的
     // 如果这个操作符是主运算符，那么就需要特殊处理
-    printf("find op idx -> %d", op);
+    printf("find op idx -> %d %s", op, tokens[op].str);
     if (tokens[op].type == DEREFERENCE) {
       return vaddr_read(eval(op + 1, q), 4);
     }
