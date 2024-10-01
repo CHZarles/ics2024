@@ -164,6 +164,15 @@ static bool make_token(char *e) {
           tk->str[1] = '\0';
           break;
         }
+        case REGISTER: {
+
+          Token *tk = &tokens[nr_token++];
+          tk->type = REGISTER;
+          memcpy(tk->str, substr_start, substr_len);
+          tk->str[substr_len] = '\0';
+          Log("detect %d th token -> %s", nr_token, tk->str);
+          break;
+        }
         case NUMBER: {
           Log("detect NUMBER");
           if (substr_len < 50) {
@@ -172,7 +181,7 @@ static bool make_token(char *e) {
             // record str
             memcpy(tk->str, substr_start, substr_len);
             tk->str[substr_len] = '\0';
-            Log("detect token -> %s ", tk->str);
+            Log("detect %d th token -> %s", nr_token, tk->str);
           } else {
             // devide it into several tokens
             // target = part1 * 10^N * 10^M * .. + part2 * 10^N1 * ... + ...
@@ -239,7 +248,7 @@ static bool make_token(char *e) {
             // record str
             memcpy(tk->str, substr_start, substr_len);
             tk->str[substr_len] = '\0';
-            Log("detect token -> %s ", tk->str);
+            Log("detect %d th token -> %s", nr_token, tk->str);
           } else {
             Assert(0, "Hex number longer than 50 not support yet");
           }
@@ -363,6 +372,12 @@ uint32_t eval(int p, int q) {
       return (uint32_t)atoi(tokens[p].str);
     } else if (tokens[p].type == HEX_NUMBER) {
       return (uint32_t)strtol(tokens[p].str, '\0', 16);
+    } else if (tokens[p].type == REGISTER) {
+      bool success = true;
+      word_t val = isa_reg_str2val(tokens[p].str, &success);
+      Assert(success, "Error eval: invalid register name %s, p = %d, q = %d",
+             tokens[p].str, p, q);
+      return val;
     } else {
       Assert(0, "Error eval: p == q");
     }

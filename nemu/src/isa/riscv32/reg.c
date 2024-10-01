@@ -46,9 +46,9 @@ word_t isa_reg_str2val(const char *s, bool *success) {
       // 2. get the address from register
       *success = true;
       addr = gpr(i);
+      break;
     }
   }
-
   // 3. return the value
   Assert(addr != -1, "Invalid register addr");
   return addr;
