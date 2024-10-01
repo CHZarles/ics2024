@@ -349,8 +349,6 @@ bool is_operator(int type) {
 // Helper function to get the priority of an operator
 int get_operator_priority(int type) {
   switch (type) {
-  case DEREFERENCE:
-    return 0;
   case '+':
   case '-':
     return 1;
@@ -362,6 +360,8 @@ int get_operator_priority(int type) {
     return 3;
   case AND:
     return 4;
+  case DEREFERENCE:
+    return 5;
   default:
     return MAX_OP;
   }
@@ -451,7 +451,7 @@ uint32_t eval(int p, int q) {
     /* printf("p = %d, q = %d , %s\n", p, q, tokens_str(p, q)); */
     /* We should do more things here. */
     int op = find_main_op(p, q);
-    // DEREFERENCE 这个操作符的优先级是最低的
+    // DEREFERENCE 这个操作符的优先级是最高的
     // 如果这个操作符是主运算符，那么就需要特殊处理
     printf("find op idx -> %d %s", op, tokens[op].str);
     if (tokens[op].type == DEREFERENCE) {
