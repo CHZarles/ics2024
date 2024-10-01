@@ -344,7 +344,7 @@ int check_parentheses(int p, int q) {
 // Helper function to check if a token is an operator
 bool is_operator(int type) {
   return type == '+' || type == '-' || type == '*' || type == '/' ||
-         type == TK_EQ || type == TK_NEQ || type == AND;
+         type == TK_EQ || type == TK_NEQ || type == AND || type == DEREFERENCE;
 }
 // Helper function to get the priority of an operator
 int get_operator_priority(int type) {
