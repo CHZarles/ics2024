@@ -14,6 +14,7 @@
  ***************************************************************************************/
 
 #include "local-include/reg.h"
+#include "common.h"
 #include <isa.h>
 
 const char *regs[] = {"$0", "ra", "sp",  "gp",  "tp", "t0", "t1", "t2",
@@ -35,4 +36,20 @@ void isa_reg_display() {
   }
 }
 
-word_t isa_reg_str2val(const char *s, bool *success) { return 0; }
+word_t isa_reg_str2val(const char *s, bool *success) {
+  Log("Call isa_reg_str2val(s=%s)", s);
+  // 1. check whether the input is valid register name
+  word_t addr = -1;
+  int reg_nums = ARRLEN(cpu.gpr);
+  for (int i = 0; i < reg_nums; ++i) {
+    if (strcmp(regs[i], s) == 0) {
+      // 2. get the address from register
+      *success = true;
+      addr = gpr(i);
+    }
+  }
+
+  // 3. return the value
+  Assert(addr != -1, "Invalid register addr");
+  return addr;
+}
