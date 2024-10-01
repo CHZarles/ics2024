@@ -49,8 +49,8 @@ static struct rule {
     {"\\)", ')'},                  // )
     {"0x[0-9][0-9]*", HEX_NUMBER}, // hex numbers , 这个的位置要在NUMBER之前
     {"[0-9][0-9]*", NUMBER},       // numbers
-    {"$[a-zA-Z][a-zA-Z0-9_]*", REGISTER}, // register
-    {"==", TK_EQ},                        // equal
+    {"\\$[a-zA-Z][a-zA-Z0-9_]*", REGISTER}, // register
+    {"==", TK_EQ},                          // equal
 };
 
 #define NR_REGEX ARRLEN(rules)
