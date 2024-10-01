@@ -142,6 +142,20 @@ static int parse_expr(char *args) {
   Assert(success, "Invalid expression");
   return 0;
 }
+
+// w EXPR
+static int add_watchpoint(char *args) {
+  // 1. ask for a new watch point
+  WP *wp = new_wp();
+  // 2. eval the expr, and store the value
+  bool success = false;
+  uint64_t ret = expr(args, &success);
+  wp->last_value = ret;
+  // 3. store the expr
+  strcpy(wp->expr, args);
+  return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -159,6 +173,9 @@ static struct {
      info_some},
     {"x", "x N EXPR , display memory range from [EXPR, EXPR + N]", display_mem},
     {"p", "p EXPR , parse expression", parse_expr},
+    {"w",
+     "w EXPR , watch EXPR, stop the process when the value of EXPR changes",
+     add_watchpoint},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
