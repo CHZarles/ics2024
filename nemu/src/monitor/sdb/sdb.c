@@ -150,6 +150,7 @@ static int add_watchpoint(char *args) {
   // 2. eval the expr, and store the value
   bool success = false;
   uint64_t ret = expr(args, &success);
+  Assert(success, "Invalid expression");
   wp->last_value = ret;
   // 3. store the expr
   strcpy(wp->expr, args);

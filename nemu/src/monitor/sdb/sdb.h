@@ -19,7 +19,6 @@
 #include <common.h>
 
 word_t expr(char *e, bool *success);
-
 typedef struct watchpoint {
   int NO;
   struct watchpoint *next;
@@ -30,7 +29,7 @@ typedef struct watchpoint {
   //  监视点上一次的值
   uint64_t last_value;
 } WP;
-
+// this definition is in is moved from watchpoint.c
 extern WP *new_wp();
 extern void free_wp(WP *wp);
 #endif
