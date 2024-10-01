@@ -349,6 +349,8 @@ bool is_operator(int type) {
 // Helper function to get the priority of an operator
 int get_operator_priority(int type) {
   switch (type) {
+  case DEREFERENCE:
+    return 0;
   case '+':
   case '-':
     return 1;
