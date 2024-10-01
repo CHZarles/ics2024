@@ -32,4 +32,5 @@ typedef struct watchpoint {
 // this definition is in is moved from watchpoint.c
 extern WP *new_wp();
 extern void free_wp(WP *wp);
+extern void free_wp_bynum(int wp_num);
 #endif

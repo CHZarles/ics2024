@@ -156,6 +156,15 @@ static int add_watchpoint(char *args) {
   strcpy(wp->expr, args);
   return 0;
 }
+// d N
+static int delete_waterpoint(char *args) {
+  // 1. parse the args
+  int wp_num;
+  Assert(string_to_int(args, &wp_num) == 0, "Parse integer fail");
+  // 2. delete the watch point
+  free_wp_bynum(wp_num);
+  return 0;
+}
 
 static int cmd_help(char *args);
 
@@ -177,6 +186,7 @@ static struct {
     {"w",
      "w EXPR , watch EXPR, stop the process when the value of EXPR changes",
      add_watchpoint},
+    {"d", "d N , delete the point N", delete_waterpoint},
 };
 
 #define NR_CMD ARRLEN(cmd_table)

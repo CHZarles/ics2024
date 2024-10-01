@@ -40,6 +40,11 @@ WP *new_wp() {
   WP *tmp = free_;
   free_ = free_->next;
   tmp->next = head;
+  if (head == NULL) {
+    tmp->NO = 0;
+  } else {
+    tmp->NO = head->NO + 1;
+  }
   head = tmp;
   return tmp;
 }
@@ -63,4 +68,18 @@ void free_wp(WP *wp) {
   }
   printf("No such watchpoint!\n");
   assert(0);
+}
+
+// helper function
+// delte a watchpoint by its NO
+void free_wp_bynum(int wp_num) {
+  WP *wp = head;
+  while (wp != NULL) {
+    if (wp->NO == wp_num) {
+      free_wp(wp);
+      return;
+    }
+    wp = wp->next;
+  }
+  printf("No such watchpoint %d\n", wp_num);
 }
