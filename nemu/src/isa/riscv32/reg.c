@@ -43,7 +43,7 @@ word_t isa_reg_str2val(const char *s, bool *success) {
   int reg_nums = ARRLEN(cpu.gpr);
   for (int i = 0; i < reg_nums; ++i) {
     /* printf("regs[%d] = %s\n", i, regs[i]); */
-    if (strcmp(regs[i], s) == 0) {
+    if (strcmp(regs[i], s + 1) == 0) {
       // 2. get the address from register
       *success = true;
       addr = gpr(i);
