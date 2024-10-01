@@ -83,3 +83,17 @@ void free_wp_bynum(int wp_num) {
   }
   printf("No such watchpoint %d\n", wp_num);
 }
+
+// display wathpoint
+void display_wp() {
+  WP *wp = head;
+  if (wp == NULL) {
+    printf("No watchpoint!\n");
+    return;
+  }
+  printf("%-5s%-20s%-20s\n", "NO", "EXPR", "VALUE");
+  while (wp != NULL) {
+    printf("%-5d%-20s%-20lu\n", wp->NO, wp->expr, wp->last_value);
+    wp = wp->next;
+  }
+}
