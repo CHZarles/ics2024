@@ -371,10 +371,16 @@ uint32_t eval(int p, int q) {
     if (tokens[p].type == NUMBER) {
       return (uint32_t)atoi(tokens[p].str);
     } else if (tokens[p].type == HEX_NUMBER) {
-      return (uint32_t)strtol(tokens[p].str, '\0', 16);
+      char *endptr;
+      uint32_t val = (uint32_t)strtol(tokens[p].str, &endptr, 16);
+      Assert(*endptr == '\0',
+             "Something wrong may happen while call strtol() to convert hex "
+             "number %s",
+             tokens[p].str);
+      return val;
     } else if (tokens[p].type == REGISTER) {
       bool success = true;
-      word_t val = isa_reg_str2val(tokens[p].str, &success);
+      uint32_t val = isa_reg_str2val(tokens[p].str, &success);
       Assert(success, "Error eval: invalid register name %s, p = %d, q = %d",
              tokens[p].str, p, q);
       return val;
