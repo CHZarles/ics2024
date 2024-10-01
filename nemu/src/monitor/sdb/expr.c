@@ -14,8 +14,8 @@
  ***************************************************************************************/
 
 #include "debug.h"
+#include "memory/vaddr.h" // NOTE: for dereference
 #include <isa.h>
-
 /* We use the POSIX regex functions to process regular expressions.
  * Type 'man regex' for more information about POSIX regex functions.
  */
@@ -29,6 +29,7 @@ enum {
   NUMBER,
   HEX_NUMBER,
   REGISTER,
+  DEREFERENCE,
 };
 
 static struct rule {
@@ -50,6 +51,7 @@ static struct rule {
     {"0x[0-9][0-9]*", HEX_NUMBER}, // hex numbers , 这个的位置要在NUMBER之前
     {"[0-9][0-9]*", NUMBER},       // numbers
     {"\\$[a-zA-Z][a-zA-Z0-9_]*", REGISTER}, // register
+    {"\\*[0-9][0-9]*", DEREFERENCE},        // reference
     {"==", TK_EQ},                          // equal
 };
 
@@ -162,6 +164,15 @@ static bool make_token(char *e) {
           tk->type = ')';
           tk->str[0] = ')';
           tk->str[1] = '\0';
+          break;
+        }
+        case DEREFERENCE: {
+
+          Token *tk = &tokens[nr_token++];
+          tk->type = DEREFERENCE;
+          memcpy(tk->str, substr_start, substr_len);
+          tk->str[substr_len] = '\0';
+          Log("detect %d th token -> %s", nr_token, tk->str);
           break;
         }
         case REGISTER: {
@@ -384,6 +395,9 @@ uint32_t eval(int p, int q) {
       Assert(success, "Error eval: invalid register name %s, p = %d, q = %d",
              tokens[p].str, p, q);
       return val;
+    } else if (tokens[p].type == DEREFERENCE) {
+      // dereference
+      return vaddr_read(eval(p + 1, q), 4);
     } else {
       Assert(0, "Error eval: p == q");
     }

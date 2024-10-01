@@ -17,7 +17,7 @@
 #include "debug.h"
 #include <cpu/cpu.h>
 #include <isa.h>
-#include <memory/paddr.h> // NOTE: for pa1 assignmen
+#include <memory/vaddr.h> // NOTE: for pa1 assignmen
 #include <readline/history.h>
 #include <readline/readline.h>
 #include <time.h>
@@ -112,20 +112,20 @@ static int display_mem(char *args) {
   Assert(success, "Parse expr fail");
   Assert(ret == 2, "Received unvaild parameters");
   Log("Run x %d 0x%x", lines, start_addr);
-  if (!likely(in_pmem(start_addr))) {
-    Log("address 0x%x is out of bound", start_addr);
-    return 0;
-  }
+  /* if (!likely(in_pmem(start_addr))) { */
+  /*   Log("address 0x%x is out of bound", start_addr); */
+  /*   return 0; */
+  /* } */
   // 2. display memory
   for (int i = 0; i < lines; ++i) {
     // display addr
     printf("0x%08x: ", start_addr);
     // 低地址的通常显示在右边, 所以循环的开始先打印高地址
     for (int k = 3; k >= 0; --k) {
-      if (!likely(in_pmem(start_addr + k))) {
-        break;
-      }
-      int val = paddr_read(start_addr + k, 1);
+      /* if (!likely(in_pmem(start_addr + k))) { */
+      /*   break; */
+      /* } */
+      int val = vaddr_read(start_addr + k, 1);
       printf("%02x ", val);
     }
     printf("\n");
