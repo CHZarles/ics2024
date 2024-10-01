@@ -451,6 +451,11 @@ uint32_t eval(int p, int q) {
     /* printf("p = %d, q = %d , %s\n", p, q, tokens_str(p, q)); */
     /* We should do more things here. */
     int op = find_main_op(p, q);
+    // DEREFERENCE 这个操作符的优先级是最低的
+    // 如果这个操作符是主运算符，那么就需要特殊处理
+    if (tokens[op].type == DEREFERENCE) {
+      return vaddr_read(eval(op + 1, q), 4);
+    }
     uint32_t val1 = eval(p, op - 1);
     uint32_t val2 = eval(op + 1, q);
     switch (tokens[op].type) {
