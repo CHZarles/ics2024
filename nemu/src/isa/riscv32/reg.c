@@ -32,7 +32,7 @@ void isa_reg_display() {
     // ref:
     // https://stackoverflow.com/questions/31026000/gdb-info-registers-command-second-column-of-output
     // name   value(hex)   value(decimal)
-    printf("%-10s   %-10x    %-10d\n", reg_name(i), gpr(i), gpr(i));
+    printf("%-10s   0x%-10x    %-10d\n", reg_name(i), gpr(i), gpr(i));
   }
 }
 
@@ -47,7 +47,7 @@ word_t isa_reg_str2val(const char *s, bool *success) {
       // 2. get the address from register
       *success = true;
       addr = gpr(i);
-      printf("addr = %d\n", addr);
+      /* printf("addr = %d\n", addr); */
       break;
     }
   }
