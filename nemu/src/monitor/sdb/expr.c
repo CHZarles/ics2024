@@ -30,6 +30,8 @@ enum {
   HEX_NUMBER,
   REGISTER,
   DEREFERENCE,
+  TK_NEQ,
+  AND,
 };
 
 static struct rule {
@@ -53,6 +55,8 @@ static struct rule {
     {"\\$[a-zA-Z][a-zA-Z0-9_]*", REGISTER}, // register
     {"\\*[0-9][0-9]*", DEREFERENCE},        // reference
     {"==", TK_EQ},                          // equal
+    {"!=", TK_NEQ},                         // not equal
+    {"&&", AND},
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -166,15 +170,43 @@ static bool make_token(char *e) {
           tk->str[1] = '\0';
           break;
         }
-        case DEREFERENCE: {
+        case TK_EQ: {
 
           Token *tk = &tokens[nr_token++];
-          tk->type = DEREFERENCE;
+          tk->type = TK_EQ;
           memcpy(tk->str, substr_start, substr_len);
           tk->str[substr_len] = '\0';
           Log("detect %d th token -> %s", nr_token, tk->str);
           break;
         }
+        case TK_NEQ: {
+
+          Token *tk = &tokens[nr_token++];
+          tk->type = TK_NEQ;
+          memcpy(tk->str, substr_start, substr_len);
+          tk->str[substr_len] = '\0';
+          Log("detect %d th token -> %s", nr_token, tk->str);
+          break;
+        }
+        case AND: {
+
+          Token *tk = &tokens[nr_token++];
+          tk->type = AND;
+          memcpy(tk->str, substr_start, substr_len);
+          tk->str[substr_len] = '\0';
+          Log("detect %d th token -> %s", nr_token, tk->str);
+          break;
+        }
+        // not able
+        /* case DEREFERENCE: { */
+        /**/
+        /*   Token *tk = &tokens[nr_token++]; */
+        /*   tk->type = DEREFERENCE; */
+        /*   memcpy(tk->str, substr_start, substr_len); */
+        /*   tk->str[substr_len] = '\0'; */
+        /*   Log("detect %d th token -> %s", nr_token, tk->str); */
+        /*   break; */
+        /* } */
         case REGISTER: {
 
           Token *tk = &tokens[nr_token++];
@@ -311,7 +343,8 @@ int check_parentheses(int p, int q) {
 #define MAX_OP 300
 // Helper function to check if a token is an operator
 bool is_operator(int type) {
-  return type == '+' || type == '-' || type == '*' || type == '/';
+  return type == '+' || type == '-' || type == '*' || type == '/' ||
+         type == TK_EQ || type == TK_NEQ || type == AND;
 }
 // Helper function to get the priority of an operator
 int get_operator_priority(int type) {
@@ -322,6 +355,10 @@ int get_operator_priority(int type) {
   case '*':
   case '/':
     return 2;
+  case TK_EQ:
+  case TK_NEQ:
+  case AND:
+    return 3;
   default:
     return MAX_OP;
   }
@@ -425,6 +462,13 @@ uint32_t eval(int p, int q) {
       return val1 * val2;
     case '/':
       return val1 / val2;
+    case TK_EQ:
+      return val1 == val2;
+    case TK_NEQ:
+      return val1 != val2;
+    case AND:
+      return val1 && val2;
+
     default:
       Log("Unknow op : %c", tokens[op].type);
       assert(0);
@@ -438,7 +482,13 @@ word_t expr(char *e, bool *success) {
   }
   *success = true;
   /* TODO: Insert codes to evaluate the expression. */
-  /* TODO(); */
+
+  for (int i = 0; i < nr_token; i++) {
+    if (tokens[i].type == '*' && (i == 0 || tokens[i - 1].type == '(' ||
+                                  is_operator(tokens[i - 1].type)))
+      tokens[i].type = DEREFERENCE;
+  }
+
   int p = 0, q = nr_token - 1;
   return eval(p, q);
 }
