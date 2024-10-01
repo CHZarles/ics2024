@@ -342,7 +342,7 @@ uint32_t eval(int p, int q) {
      */
     // 从数值类型的角度来说，似乎不存在一个数位数会大于50
     // 实验规定数值是整数类型
-    return (double)atoi(tokens[p].str);
+    return (uint32_t)atoi(tokens[p].str);
   }
   int state = check_parentheses(p, q);
   Assert(state != -1, "Found an unvaild expr");
