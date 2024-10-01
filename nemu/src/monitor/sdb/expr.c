@@ -77,7 +77,7 @@ typedef struct token {
 } Token;
 // NOTE: here only support 32 tokens
 /* static Token tokens[32] __attribute__((used)) = {}; */
-static Token tokens[1032] __attribute__((used)) = {};
+static Token tokens[65535] __attribute__((used)) = {};
 static int nr_token __attribute__((used)) = 0;
 
 #define MIN(i, j) (((i) < (j)) ? (i) : (j))
