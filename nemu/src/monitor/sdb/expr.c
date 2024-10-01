@@ -349,19 +349,19 @@ bool is_operator(int type) {
 // Helper function to get the priority of an operator
 int get_operator_priority(int type) {
   switch (type) {
-  case '+':
-  case '-':
-    return 1;
-  case '*':
-  case '/':
-    return 2;
   case TK_EQ:
   case TK_NEQ:
-    return 3;
+    return 0;
   case AND:
-    return 4;
+    return 1;
+  case '+':
+  case '-':
+    return 2;
+  case '*':
+  case '/':
+    return 3;
   case DEREFERENCE:
-    return 5;
+    return 4;
   default:
     return MAX_OP;
   }
@@ -407,7 +407,7 @@ char *tokens_str(int p, int q) {
   return message;
 }
 // 左右闭区间
-uint32_t eval(int p, int q) {
+uint64_t eval(int p, int q) {
   Log("Given p = %d, q = %d , eval %s", p, q, tokens_str(p, q));
   if (p > q) {
     Assert(p > q, "Error eval: p > q");
@@ -453,12 +453,12 @@ uint32_t eval(int p, int q) {
     int op = find_main_op(p, q);
     // DEREFERENCE 这个操作符的优先级是最高的
     // 如果这个操作符是主运算符，那么就需要特殊处理
-    printf("find op idx -> %d %s", op, tokens[op].str);
+    /* printf("find op idx -> %d %s", op, tokens[op].str); */
     if (tokens[op].type == DEREFERENCE) {
       return vaddr_read(eval(op + 1, q), 4);
     }
-    uint32_t val1 = eval(p, op - 1);
-    uint32_t val2 = eval(op + 1, q);
+    uint64_t val1 = eval(p, op - 1);
+    uint64_t val2 = eval(op + 1, q);
     switch (tokens[op].type) {
     case '+':
       return val1 + val2;
