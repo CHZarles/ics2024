@@ -48,8 +48,8 @@ static struct rule {
     {"/", '/'},                    // times
     {"\\(", '('},                  // (
     {"\\)", ')'},                  // )
-    {"[0-9][0-9]*", NUMBER},       // numbers
     {"0x[0-9][0-9]*", HEX_NUMBER}, // hex numbers
+    {"[0-9][0-9]*", NUMBER},       // numbers
     {"==", TK_EQ},                 // equal
 };
 
