@@ -53,9 +53,9 @@ static struct rule {
     {"0x[0-9][0-9]*", HEX_NUMBER}, // hex numbers , 这个的位置要在NUMBER之前
     {"[0-9][0-9]*", NUMBER},       // numbers
     {"\\$[a-zA-Z][a-zA-Z0-9_]*", REGISTER}, // register
-    {"\\*[0-9][0-9]*", DEREFERENCE},        // reference
-    {"==", TK_EQ},                          // equal
-    {"!=", TK_NEQ},                         // not equal
+    /* {"\\*[0-9][0-9]*", DEREFERENCE},        // reference */
+    {"==", TK_EQ},  // equal
+    {"!=", TK_NEQ}, // not equal
     {"&&", AND},
 };
 
@@ -357,8 +357,9 @@ int get_operator_priority(int type) {
     return 2;
   case TK_EQ:
   case TK_NEQ:
-  case AND:
     return 3;
+  case AND:
+    return 4;
   default:
     return MAX_OP;
   }
@@ -432,16 +433,13 @@ uint32_t eval(int p, int q) {
       Assert(success, "Error eval: invalid register name %s, p = %d, q = %d",
              tokens[p].str, p, q);
       return val;
-    } else if (tokens[p].type == DEREFERENCE) {
-      // dereference
-      return vaddr_read(eval(p + 1, q), 4);
     } else {
       Assert(0, "Error eval: p == q");
     }
   }
   int state = check_parentheses(p, q);
   Assert(state != -1, "Found an unvaild expr");
-  if (state == 0) {
+  if (state == 0) { // 符合 ( <expr> )
     /* The expression is surrounded by a matched pair of parentheses.
      * If that is the case, just throw away the parentheses.
      */
