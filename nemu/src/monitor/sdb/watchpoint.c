@@ -99,7 +99,7 @@ void display_wp() {
 }
 
 // chedk_wp()遍历监视点链表，检查每个监视点的表达式的值是否发生了变化
-void check_wp() {
+void check_wp(bool *something_changed) {
   WP *p = head;
   while (p != NULL) {
     bool success = true;
@@ -110,6 +110,7 @@ void check_wp() {
       printf("Old value = %lu\n", p->last_value);
       printf("New value = %lu\n", new_val);
       p->last_value = new_val;
+      *something_changed = true;
     }
     p = p->next;
   }

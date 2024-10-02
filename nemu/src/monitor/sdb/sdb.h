@@ -35,5 +35,5 @@ extern void free_wp(WP *wp);
 extern void free_wp_bynum(int wp_num);
 extern void display_wp();
 // for detecting whether the value of the watchpoint has changed
-extern void check_wp();
+extern void check_wp(bool *);
 #endif

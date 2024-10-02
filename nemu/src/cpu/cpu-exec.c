@@ -47,7 +47,13 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 #ifdef CONFIG_WATCHPOINT
   // tranver wathpoint list to check wheathr the expr is changed
-  check_wp();
+  bool some_thing_changed = false;
+  check_wp(&some_thing_changed);
+  if (some_thing_changed) {
+    // info  monitor
+    nemu_state.state = NEMU_STOP;
+    printf("watchpoint changed, program stop\n");
+  }
 #endif
 }
 
