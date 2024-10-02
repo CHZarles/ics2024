@@ -1,31 +1,35 @@
 /***************************************************************************************
-* Copyright (c) 2014-2024 Zihao Yu, Nanjing University
-*
-* NEMU is licensed under Mulan PSL v2.
-* You can use this software according to the terms and conditions of the Mulan PSL v2.
-* You may obtain a copy of Mulan PSL v2 at:
-*          http://license.coscl.org.cn/MulanPSL2
-*
-* THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
-* EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
-* MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
-*
-* See the Mulan PSL v2 for more details.
-***************************************************************************************/
+ * Copyright (c) 2014-2024 Zihao Yu, Nanjing University
+ *
+ * NEMU is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan
+ *PSL v2. You may obtain a copy of Mulan PSL v2 at:
+ *          http://license.coscl.org.cn/MulanPSL2
+ *
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY
+ *KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ *NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ *
+ * See the Mulan PSL v2 for more details.
+ ***************************************************************************************/
 
-#include <isa.h>
-#include <cpu/cpu.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 #include "sdb.h"
+#include "debug.h"
+#include <cpu/cpu.h>
+#include <isa.h>
+#include <memory/vaddr.h> // NOTE: for pa1 assignmen
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <time.h>
 
 static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
 
-/* We use the `readline' library to provide more flexibility to read from stdin. */
-static char* rl_gets() {
+/* We use the `readline' library to provide more flexibility to read from stdin.
+ */
+static char *rl_gets() {
   static char *line_read = NULL;
 
   if (line_read) {
@@ -47,9 +51,122 @@ static int cmd_c(char *args) {
   return 0;
 }
 
+static int cmd_q(char *args) { return -1; }
 
-static int cmd_q(char *args) {
-  return -1;
+// step n
+static int string_to_int(const char *args, int *steps) {
+  // 检查输入指针是否为空
+  Assert(steps != NULL, "result should not be NULL");
+  Log("Call string_to_int(args = %p, steps = %p)", (void *)args,
+      (void *)&steps);
+  if (args == NULL) {
+    Log("*steps <- 1");
+    *steps = 1;
+    return 0;
+  }
+  int items_parsed = sscanf(args, "%d", steps);
+  Assert(items_parsed == 1, "Parse integer fail");
+  return 0;
+}
+static int step_n(char *args) {
+  // 1. parse args to int
+  Log("Call step_n(%p)", (void *)args);
+  int steps;
+  Assert(string_to_int(args, &steps) == 0, "Call string_to_int fail");
+  Log("Run si %d", steps);
+  // 2. call
+  cpu_exec(steps);
+
+  return 0;
+}
+
+// info w, info r
+static int info_some(char *args) {
+
+  Log("Call info_some(%p)", (void *)args);
+  // 1. parse args
+  size_t args_len = strlen(args);
+  Assert(args_len == 1, "Only support info w or info r");
+  char info_type = args[0];
+  Assert(info_type == 'r' || info_type == 'w', "Only support info w or info r");
+  Log("Run info %c", info_type);
+  if (info_type == 'r') {
+    isa_reg_display();
+  } else if (info_type == 'w') {
+    // TODO: do it after finish watch point
+    // tranverse watch point
+
+    display_wp();
+    return 0;
+  }
+  return 0;
+}
+
+// x N EXPT
+static int display_mem(char *args) {
+
+  Log("Call display_mem(%p)", (void *)args);
+  // 1. receive 2 parameters
+  unsigned int lines;
+  char expr_[65536];
+  int ret = sscanf(args, "%u   %s", &lines, expr_);
+  bool success;
+  paddr_t start_addr = expr(expr_, &success);
+  Assert(success, "Parse expr fail");
+  Assert(ret == 2, "Received unvaild parameters");
+  Log("Run x %d 0x%x", lines, start_addr);
+  /* if (!likely(in_pmem(start_addr))) { */
+  /*   Log("address 0x%x is out of bound", start_addr); */
+  /*   return 0; */
+  /* } */
+  // 2. display memory
+  for (int i = 0; i < lines; ++i) {
+    // display addr
+    printf("0x%08x: ", start_addr);
+    // 低地址的通常显示在右边, 所以循环的开始先打印高地址
+    for (int k = 3; k >= 0; --k) {
+      /* if (!likely(in_pmem(start_addr + k))) { */
+      /*   break; */
+      /* } */
+      int val = vaddr_read(start_addr + k, 1);
+      printf("%02x ", val);
+    }
+    printf("\n");
+    start_addr += 4;
+  }
+  return 0;
+}
+
+// p EXPR
+static int parse_expr(char *args) {
+  bool success = false;
+  word_t ret = expr(args, &success);
+  printf("%u\n", ret);
+  Assert(success, "Invalid expression");
+  return 0;
+}
+
+// w EXPR
+static int add_watchpoint(char *args) {
+  // 1. ask for a new watch point
+  WP *wp = new_wp();
+  // 2. eval the expr, and store the value
+  bool success = false;
+  uint64_t ret = expr(args, &success);
+  Assert(success, "Invalid expression");
+  wp->last_value = ret;
+  // 3. store the expr
+  strcpy(wp->expr, args);
+  return 0;
+}
+// d N
+static int delete_waterpoint(char *args) {
+  // 1. parse the args
+  int wp_num;
+  Assert(string_to_int(args, &wp_num) == 0, "Parse integer fail");
+  // 2. delete the watch point
+  free_wp_bynum(wp_num);
+  return 0;
 }
 
 static int cmd_help(char *args);
@@ -57,14 +174,22 @@ static int cmd_help(char *args);
 static struct {
   const char *name;
   const char *description;
-  int (*handler) (char *);
-} cmd_table [] = {
-  { "help", "Display information about all supported commands", cmd_help },
-  { "c", "Continue the execution of the program", cmd_c },
-  { "q", "Exit NEMU", cmd_q },
+  int (*handler)(char *);
+} cmd_table[] = {
+    {"help", "Display information about all supported commands", cmd_help},
+    {"c", "Continue the execution of the program", cmd_c},
+    {"q", "Exit NEMU", cmd_q},
 
-  /* TODO: Add more commands */
-
+    /* TODO: Add more commands */
+    {"si", "si [N] , Run N (default 1) steps", step_n},
+    {"info", "info [r | w] , display register / display watch point",
+     info_some},
+    {"x", "x N EXPR , display memory range from [EXPR, EXPR + N]", display_mem},
+    {"p", "p EXPR , parse expression", parse_expr},
+    {"w",
+     "w EXPR , watch EXPR, stop the process when the value of EXPR changes",
+     add_watchpoint},
+    {"d", "d N , delete the point N", delete_waterpoint},
 };
 
 #define NR_CMD ARRLEN(cmd_table)
@@ -76,12 +201,11 @@ static int cmd_help(char *args) {
 
   if (arg == NULL) {
     /* no argument given */
-    for (i = 0; i < NR_CMD; i ++) {
+    for (i = 0; i < NR_CMD; i++) {
       printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
     }
-  }
-  else {
-    for (i = 0; i < NR_CMD; i ++) {
+  } else {
+    for (i = 0; i < NR_CMD; i++) {
       if (strcmp(arg, cmd_table[i].name) == 0) {
         printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
         return 0;
@@ -92,9 +216,7 @@ static int cmd_help(char *args) {
   return 0;
 }
 
-void sdb_set_batch_mode() {
-  is_batch_mode = true;
-}
+void sdb_set_batch_mode() { is_batch_mode = true; }
 
 void sdb_mainloop() {
   if (is_batch_mode) {
@@ -102,12 +224,14 @@ void sdb_mainloop() {
     return;
   }
 
-  for (char *str; (str = rl_gets()) != NULL; ) {
+  for (char *str; (str = rl_gets()) != NULL;) {
     char *str_end = str + strlen(str);
 
     /* extract the first token as the command */
     char *cmd = strtok(str, " ");
-    if (cmd == NULL) { continue; }
+    if (cmd == NULL) {
+      continue;
+    }
 
     /* treat the remaining string as the arguments,
      * which may need further parsing
@@ -123,14 +247,18 @@ void sdb_mainloop() {
 #endif
 
     int i;
-    for (i = 0; i < NR_CMD; i ++) {
+    for (i = 0; i < NR_CMD; i++) {
       if (strcmp(cmd, cmd_table[i].name) == 0) {
-        if (cmd_table[i].handler(args) < 0) { return; }
+        if (cmd_table[i].handler(args) < 0) {
+          return;
+        }
         break;
       }
     }
 
-    if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
+    if (i == NR_CMD) {
+      printf("Unknown command '%s'\n", cmd);
+    }
   }
 }
 
