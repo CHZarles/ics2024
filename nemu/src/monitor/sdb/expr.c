@@ -43,15 +43,16 @@ static struct rule {
      * Pay attention to the precedence level of different rules.
      */
 
-    {" +", TK_NOTYPE},             // spaces
-    {"\\+", '+'},                  // plus
-    {"-", '-'},                    // subtraction
-    {"\\*", '*'},                  // times
-    {"/", '/'},                    // times
-    {"\\(", '('},                  // (
-    {"\\)", ')'},                  // )
-    {"0x[0-9][0-9]*", HEX_NUMBER}, // hex numbers , 这个的位置要在NUMBER之前
-    {"[0-9][0-9]*", NUMBER},       // numbers
+    {" +", TK_NOTYPE}, // spaces
+    {"\\+", '+'},      // plus
+    {"-", '-'},        // subtraction
+    {"\\*", '*'},      // times
+    {"/", '/'},        // times
+    {"\\(", '('},      // (
+    {"\\)", ')'},      // )
+    {"0x[0-9a-fA-F][0-9a-fA-F]*",
+     HEX_NUMBER},            // hex numbers , 这个的位置要在NUMBER之前
+    {"[0-9][0-9]*", NUMBER}, // numbers
     {"\\$[a-zA-Z][a-zA-Z0-9_]*", REGISTER}, // register
     /* {"\\*[0-9][0-9]*", DEREFERENCE},        // reference */
     {"==", TK_EQ},  // equal
