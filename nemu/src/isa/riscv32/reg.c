@@ -34,6 +34,8 @@ void isa_reg_display() {
     // name   value(hex)   value(decimal)
     printf("%-10s   0x%-10x    %-10d\n", reg_name(i), gpr(i), gpr(i));
   }
+  // 3. extand , for pc
+  printf("pc        0x%-10x    %-10d\n", cpu.pc, cpu.pc);
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
