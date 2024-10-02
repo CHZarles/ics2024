@@ -61,3 +61,14 @@ else
 # Include rules to build NEMU
 include $(NEMU_HOME)/scripts/native.mk
 endif
+
+
+count:
+	# count the number of lines of code, not inlcude empty line
+	@find . -name '*.c' -o -name '.h' | xargs grep -v '^[[:space:]]*$$' | wc -l 
+	# compare the number of lines of code in the last commit
+	@git diff HEAD~1 HEAD
+	# compare the number of lines of code in the commit with lastest tags
+	@latest_tag=$$(git describe --tags --abbrev=0); \
+	echo "Latest tag is $$latest_tag"; \
+	git diff --shortstat $$latest_tag HEAD
