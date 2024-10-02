@@ -97,3 +97,20 @@ void display_wp() {
     wp = wp->next;
   }
 }
+
+// chedk_wp()遍历监视点链表，检查每个监视点的表达式的值是否发生了变化
+void check_wp() {
+  WP *p = head;
+  while (p != NULL) {
+    bool success = true;
+    uint64_t new_val = expr(p->expr, &success);
+    Assert(success, "Fail to calculate the value of watchpoint %d\n", p->NO);
+    if (new_val != p->last_value) {
+      printf("Hit watchpoint %d at %s\n", p->NO, p->expr);
+      printf("Old value = %lu\n", p->last_value);
+      printf("New value = %lu\n", new_val);
+      p->last_value = new_val;
+    }
+    p = p->next;
+  }
+}
