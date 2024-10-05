@@ -27,6 +27,7 @@ enum {
   TYPE_U,
   TYPE_S,
   TYPE_N, // none
+  TYPE_J, // for jal
 };
 
 #define src1R()                                                                \
@@ -49,6 +50,11 @@ enum {
   do {                                                                         \
     *imm = (SEXT(BITS(i, 31, 25), 7) << 5) | BITS(i, 11, 7);                   \
   } while (0)
+#define immJ()                                                                 \
+  do {                                                                         \
+    *imm = (SEXT(BITS(i, 31, 31), 1) << 20) | (BITS(i, 19, 12) << 12) |        \
+           (BITS(i, 20, 20) << 11) | (BITS(i, 30, 21) << 1);                   \
+  } while (0)
 
 static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2,
                            word_t *imm, int type) {
@@ -68,6 +74,9 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2,
     src1R();
     src2R();
     immS();
+    break;
+  case TYPE_J:
+    immJ();
     break;
   case TYPE_N:
     break;
@@ -95,7 +104,7 @@ static int decode_exec(Decode *s) {
           R(rd) = Mr(src1 + imm, 1));
   INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi, I,
           R(rd) = src1 + imm);
-  INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal, U, R(rd) = s->pc + 4;
+  INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal, J, R(rd) = s->pc + 4;
           s->pc += imm;);
 
   INSTPAT("??????? ????? ????? 000 ????? 01000 11", sb, S,
