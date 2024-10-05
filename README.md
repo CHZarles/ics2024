@@ -287,3 +287,65 @@ mask 是 key 的掩码, shift 是opcode 距离最低位的比特数量(似乎在
 ```
 
 ## 整理一条指令在NEMU中的执行过程
+
+cpu 这个全局变量(结构体) 保存pc 指针和 寄存器
+pc 指针记录当次执行的指令的地址
+在nemu启动的时候，pc 指针会被赋值到 RESET_VECTOR (0x80000000
+
+typedef struct Decode {
+vaddr_t pc;
+vaddr_t snpc; // static next pc
+vaddr_t dnpc; // dynamic next pc
+ISADecodeInfo isa;
+IFDEF(CONFIG_ITRACE, char logbuf[128]);
+} Decode;
+
+cpu.pc -> Decode -> 根据指令做对应的事情，
+
+程序根据pc保存的地址来取指令，然后保存到 Decode 这个结构体里面
+然后代码会解析， 指令的二进制 ，根据指令的语义，来修改pc或者寄存器的信息
+
+## RTFSC, 理解执行未实现指令的时候, NEMU具体会怎么做.
+
+```cpp
+INSTPAT_START();
+INSTPAT("??????? ????? ????? ??? ????? 00101 11", auipc  , U, R(rd) = s->pc + imm);
+INSTPAT("??????? ????? ????? 100 ????? 00000 11", lbu    , I, R(rd) = Mr(src1 + imm, 1));
+INSTPAT("??????? ????? ????? 000 ????? 01000 11", sb     , S, Mw(src1 + imm, 1, src2));
+
+INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
+* INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
+INSTPAT_END();
+
+```
+
+如果一个指令没有实现，它会最后执行我上面代码 \* 好标记的那个宏
+那个宏会调用下面这个函数
+
+```cpp
+void invalid_inst(vaddr_t thispc) {
+  uint32_t temp[2];
+  vaddr_t pc = thispc;
+  temp[0] = inst_fetch(&pc, 4);
+  temp[1] = inst_fetch(&pc, 4);
+
+  uint8_t *p = (uint8_t *)temp;
+  printf("invalid opcode(PC = " FMT_WORD "):\n"
+      "\t%02x %02x %02x %02x %02x %02x %02x %02x ...\n"
+      "\t%08x %08x...\n",
+      thispc, p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], temp[0], temp[1]);
+
+  printf("There are two cases which will trigger this unexpected exception:\n"
+      "1. The instruction at PC = " FMT_WORD " is not implemented.\n"
+      "2. Something is implemented incorrectly.\n", thispc);
+  printf("Find this PC(" FMT_WORD ") in the disassembling result to distinguish which case it is.\n\n", thispc);
+  printf(ANSI_FMT("If it is the first case, see\n%s\nfor more details.\n\n"
+        "If it is the second case, remember:\n"
+        "* The machine is always right!\n"
+        "* Every line of untested code is always wrong!\n\n", ANSI_FG_RED), isa_logo);
+
+  set_nemu_state(NEMU_ABORT, thispc, -1);
+}
+```
+
+这个函数的功能是打印log信息，并且设置nemu的状态为abort
