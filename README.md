@@ -349,3 +349,11 @@ void invalid_inst(vaddr_t thispc) {
 ```
 
 这个函数的功能是打印log信息，并且设置nemu的状态为abort
+
+## JAL 命令解惑
+
+https://www.reddit.com/r/RISCV/comments/1e5aa9w/quick_question_about_riscv_instruction/
+
+## 辅助工具
+
+https://luplab.gitlab.io/rvcodecjs/#q=000aa903&abi=false&isa=AUTO
