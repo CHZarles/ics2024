@@ -123,7 +123,7 @@ static int decode_exec(Decode *s) {
 
   // debug
   word_t origin = Mr(0x80000024, 4);
-  printf("Mr(0x80000024, 4) = %d\n", origin);
+  printf("Mr(0x80000024, 4) = %x\n", origin);
   return 0;
 }
 
