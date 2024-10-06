@@ -359,3 +359,36 @@ https://www.reddit.com/r/RISCV/comments/1e5aa9w/quick_question_about_riscv_instr
 https://luplab.gitlab.io/rvcodecjs/#q=000aa903&abi=false&isa=AUTO
 
 https://nju-projectn.github.io/dlco-lecture-note/exp/11.html
+
+## 两个宏的测试
+
+```c++
+#include <bitset>
+#include <cstdint>
+#include <iostream>
+
+#define BITMASK(bits) ((1ull << (bits)) - 1)
+#define BITS(x, hi, lo) (((x) >> (lo)) & BITMASK((hi) - (lo) + 1))
+
+int main() {
+  uint64_t x = 0b110110; // 二进制数 110110
+
+  std::cout << "1ull << 3: " << std::bitset<8>(1ull << 3)
+            << std::endl; // 期望输出 0b1000
+  std::cout << "(1ull << 3) - 1: " << std::bitset<8>((1ull << 3) - 1)
+            << std::endl; // 期望输出 0b111
+  // 测试 BITMASK 宏
+  std::cout << "BITMASK(3): " << std::bitset<8>(BITMASK(3))
+            << std::endl; // 期望输出 0b111
+  std::cout << "BITMASK(5): " << std::bitset<8>(BITMASK(5))
+            << std::endl; // 期望输出 0b11111
+
+  // 测试 BITS 宏
+  std::cout << "BITS(x, 4, 2): " << std::bitset<8>(BITS(x, 4, 2))
+            << std::endl; // 期望输出 0b101
+  std::cout << "BITS(x, 5, 1): " << std::bitset<8>(BITS(x, 5, 1))
+            << std::endl; // 期望输出 0b11011
+
+  return 0;
+}
+```
