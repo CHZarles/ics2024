@@ -179,6 +179,7 @@ static int decode_exec(Decode *s) {
           s->dnpc = s->pc + imm);
 
   // type s
+  // 2.6. Load and Store Instructions
   INSTPAT("??????? ????? ????? 000 ????? 01000 11", sb, S,
           Mw(src1 + imm, 1, src2));
   // 2.6. Load and Store Instructions
