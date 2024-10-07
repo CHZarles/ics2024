@@ -141,7 +141,7 @@ static int display_mem(char *args) {
 static int parse_expr(char *args) {
   bool success = false;
   word_t ret = expr(args, &success);
-  printf("%08x %u\n", ret, ret);
+  printf("0x%08x %u\n", ret, ret);
   Assert(success, "Invalid expression");
   return 0;
 }
