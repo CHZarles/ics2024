@@ -200,7 +200,7 @@ static int decode_exec(Decode *s) {
   // 13.1. Multiplication Operations
   // xlen 32
   INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh, R,
-          R(rd) = (int64_t)1 * ((int32_t)src1 * (int32_t)src2) >> 32); // RV32
+          R(rd) = ((int64_t)src1 * (int64_t)src2) >> 32); // RV32
   // type j
   // 2.5.1. Unconditional Jumps
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal, J, R(rd) = s->pc + 4;
