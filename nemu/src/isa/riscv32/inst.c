@@ -151,7 +151,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000000 ????? ????? 101 ????? 00100 11", srli, I,
           R(rd) = src1 >> BITS(imm, 5, 0)); // logical right shift
   INSTPAT("0000000 ????? ????? 001 ????? 00100 11", slli, I,
-          R(rd) = src1 << SEXT(BITS(imm, 5, 0), 6)); // logical left shift
+          R(rd) = src1 << BITS(imm, 5, 0)); // logical left shift
   INSTPAT("??????? ????? ????? 111 ????? 00100 11", andi, I,
           R(rd) = src1 & imm); // 20 ~ 25
 
@@ -199,7 +199,7 @@ static int decode_exec(Decode *s) {
   // 13.1. Multiplication Operations
   // xlen 32
   INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh, R,
-          R(rd) = ((int64_t)src1 * (int64_t)src2) >> 32); // RV32
+          R(rd) = (int64_t)1 * ((int32_t)src1 * (int32_t)src2) >> 32); // RV32
   // type j
   // 2.5.1. Unconditional Jumps
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal, J, R(rd) = s->pc + 4;
