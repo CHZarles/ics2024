@@ -159,7 +159,7 @@ static int decode_exec(Decode *s) {
           R(rd) = src1 ^ imm);
   // type r
   INSTPAT("0000000 ????? ????? 000 ????? 01100 11", add, R,
-          R(rd) = src1 + src2);
+          R(rd) = (int32_t)src1 + (int32_t)src2);
 
   INSTPAT("0100000 ????? ????? 000 ????? 01100 11", sub, R,
           R(rd) = src1 - src2);
