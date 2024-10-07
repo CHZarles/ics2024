@@ -149,9 +149,10 @@ static int decode_exec(Decode *s) {
   INSTPAT("0100000 ????? ????? 101 ????? 00100 11", srai, I,
           R(rd) = (int32_t)src1 >> BITS(imm, 4, 0)); // arithmetic right shift
   INSTPAT("0000000 ????? ????? 101 ????? 00100 11", srli, I,
-          R(rd) = src1 >> SEXT(BITS(imm, 5, 0), 6)); // logical right shift
+          R(rd) = src1 >> SEXT(BITS(imm, 4, 0), 5)); // logical right shift
+  // 2.4.1. Integer Register-Immediate Instructions
   INSTPAT("0000000 ????? ????? 001 ????? 00100 11", slli, I,
-          R(rd) = src1 << SEXT(BITS(imm, 5, 0), 6)); // logical left shift
+          R(rd) = src1 << BITS(imm, 4, 0)); // logical left shift
   INSTPAT("??????? ????? ????? 111 ????? 00100 11", andi, I,
           R(rd) = src1 & imm); // 20 ~ 25
 
