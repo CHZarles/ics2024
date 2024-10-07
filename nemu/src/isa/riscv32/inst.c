@@ -17,6 +17,7 @@
 #include <cpu/cpu.h>
 #include <cpu/decode.h>
 #include <cpu/ifetch.h>
+#include <stdint.h>
 
 #define R(i) gpr(i)
 #define Mr vaddr_read
@@ -181,7 +182,7 @@ static int decode_exec(Decode *s) {
           R(rd) = src1 << BITS(src2, 4, 0));
 
   INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul, R,
-          R(rd) = src1 * src2);
+          R(rd) = (int32_t)src1 * (int32_t)src2);
 
   // 13.2. Division Operations
   INSTPAT("0000001 ????? ????? 100 ????? 01100 11", div, R,
