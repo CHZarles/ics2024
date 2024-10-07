@@ -200,8 +200,10 @@ static int decode_exec(Decode *s) {
           R(rd) = src1 % src2);
   // 13.1. Multiplication Operations
   // xlen 32
+  // 超级无敌坑爹的地方，这个地方的mulh是有符号的，所以要先转成有符号的
   INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh, R,
-          R(rd) = ((int64_t)src1 * (int64_t)src2) >> 32); // RV32
+          R(rd) =
+              ((int64_t)(int32_t)src1 * (int64_t)(int32_t)src2) >> 32); // RV32
   // type j
   // 2.5.1. Unconditional Jumps
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal, J, R(rd) = s->pc + 4;
