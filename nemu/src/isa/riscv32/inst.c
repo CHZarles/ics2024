@@ -127,7 +127,7 @@ static int decode_exec(Decode *s) {
           R(rd) = Mr(src1 + imm, 1));
   // 2.4.1. Integer Register-Immediate Instructions
   INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi, I,
-          R(rd) = src1 + imm);
+          R(rd) = (int32_t)src1 + (int32_t)imm);
   // 2.5.1. Unconditional Jumps
   INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr, I, R(rd) = s->pc + 4;
           s->dnpc = (src1 + imm) & 0xfffffffe);
