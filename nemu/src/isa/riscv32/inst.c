@@ -152,7 +152,8 @@ static int decode_exec(Decode *s) {
           R(rd) = src1 >> BITS(imm, 4, 0)); // logical right shift
   // 2.4.1. Integer Register-Immediate Instructions
   INSTPAT("0000000 ????? ????? 001 ????? 00100 11", slli, I,
-          R(rd) = src1 << imm); // logical left shift
+          R(rd) = src1 << imm); // logical left shift,
+                                // 因为高位都是0，应该直接用imm左移就好
   INSTPAT("??????? ????? ????? 111 ????? 00100 11", andi, I,
           R(rd) = src1 & imm); // 20 ~ 25
 
@@ -183,7 +184,7 @@ static int decode_exec(Decode *s) {
           R(rd) = src1 << BITS(src2, 4, 0));
 
   INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul, R,
-          R(rd) = (int32_t)src1 * (int32_t)src2);
+          R(rd) = (int64_t)src1 * (int64_t)src2);
 
   // 13.2. Division Operations
   INSTPAT("0000001 ????? ????? 100 ????? 01100 11", div, R,
