@@ -183,6 +183,9 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000000 ????? ????? 001 ????? 01100 11", sll, R,
           R(rd) = src1 << BITS(src2, 4, 0));
 
+  INSTPAT("0100000 ????? ????? 101 ????? 01100 11", sra, R,
+          R(rd) = (int32_t)src1 >> BITS(src2, 4, 0));
+
   INSTPAT("0000001 ????? ????? 000 ????? 01100 11", mul, R,
           R(rd) = (int32_t)src1 * (int32_t)src2);
 
@@ -201,6 +204,7 @@ static int decode_exec(Decode *s) {
   // 13.1. Multiplication Operations
   // xlen 32
   // 超级无敌坑爹的地方，这个地方的mulh是有符号的，所以要先转成有符号的
+  // src1 本来是无符号数，如果直接强转成int64_t , 进行的是 0 扩展而不是符号扩展
   INSTPAT("0000001 ????? ????? 001 ????? 01100 11", mulh, R,
           R(rd) =
               ((int64_t)(int32_t)src1 * (int64_t)(int32_t)src2) >> 32); // RV32
