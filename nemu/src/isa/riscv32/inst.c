@@ -152,7 +152,7 @@ static int decode_exec(Decode *s) {
           R(rd) = src1 >> BITS(imm, 4, 0)); // logical right shift
   // 2.4.1. Integer Register-Immediate Instructions
   INSTPAT("0000000 ????? ????? 001 ????? 00100 11", slli, I,
-          R(rd) = src1 << BITS(imm, 4, 0)); // logical left shift
+          R(rd) = src1 << imm); // logical left shift
   INSTPAT("??????? ????? ????? 111 ????? 00100 11", andi, I,
           R(rd) = src1 & imm); // 20 ~ 25
 
