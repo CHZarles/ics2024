@@ -107,8 +107,10 @@ void check_wp(bool *something_changed) {
     Assert(success, "Fail to calculate the value of watchpoint %d\n", p->NO);
     if (new_val != p->last_value) {
       printf("Hit watchpoint %d at %s\n", p->NO, p->expr);
-      printf("Old value = %lu\n", p->last_value);
-      printf("New value = %lu\n", new_val);
+      // display in hex
+      printf("Old value = 0x%lx %lu\n", p->last_value, p->last_value);
+      /* printf("Old value = 0x%x %lu\n", p->last_value, p->last_value); */
+      printf("New value = 0x%lx %lu\n", new_val, new_val);
       p->last_value = new_val;
       *something_changed = true;
     }
