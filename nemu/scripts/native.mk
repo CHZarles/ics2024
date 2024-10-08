@@ -29,7 +29,7 @@ override ARGS += $(ARGS_DIFF)
 override ARGS += "-b"
 
 # debug display for ARGS
-$(info $ARGS)
+$(info $(ARGS))
 
 # Command to execute NEMU
 IMG ?=
