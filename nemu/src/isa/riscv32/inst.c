@@ -211,8 +211,10 @@ static int decode_exec(Decode *s) {
         R(rd) = src1;
       } else { R(rd) = (int32_t)src1 / (int32_t)src2; });
 
-  INSTPAT("0000001 ????? ????? 101 ????? 01100 11", divu, R,
-          R(rd) = src1 / src2);
+  INSTPAT(
+      "0000001 ????? ????? 101 ????? 01100 11", divu, R,
+      if (src2 == 0) { R(rd) = 0xffffffff; } else { R(rd) = src1 / src2; });
+
   // 13.2. Division Operations
   INSTPAT("0000001 ????? ????? 110 ????? 01100 11", rem, R,
           R(rd) = (int32_t)src1 % (int32_t)src2);
