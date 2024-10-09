@@ -204,7 +204,6 @@ static int decode_exec(Decode *s) {
   INSTPAT(
       "0000001 ????? ????? 100 ????? 01100 11", div, R,
       // edge case
-      // 1.sr2 = 0
       if (src2 == 0) { // zero excpetion
         R(rd) = 0xffffffff;
       } else if (src1 == (1 << 31) && src2 == 0xffffffff) { // overflow
@@ -216,8 +215,15 @@ static int decode_exec(Decode *s) {
       if (src2 == 0) { R(rd) = 0xffffffff; } else { R(rd) = src1 / src2; });
 
   // 13.2. Division Operations
-  INSTPAT("0000001 ????? ????? 110 ????? 01100 11", rem, R,
-          R(rd) = (int32_t)src1 % (int32_t)src2);
+  INSTPAT(
+      "0000001 ????? ????? 110 ????? 01100 11", rem, R,
+      if (src2 == 0) {
+        R(rd) = src1;
+      } else if (src1 == (1 << 31) && src2 == 0xffffffff) { R(rd) = 0; } else {
+        R(rd) = (int32_t)src1 % (int32_t)src2;
+      }
+
+  );
 
   INSTPAT("0000001 ????? ????? 111 ????? 01100 11", remu, R,
           R(rd) = src1 % src2);
