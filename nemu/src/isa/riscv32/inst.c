@@ -225,8 +225,10 @@ static int decode_exec(Decode *s) {
 
   );
 
-  INSTPAT("0000001 ????? ????? 111 ????? 01100 11", remu, R,
-          R(rd) = src1 % src2);
+  INSTPAT(
+      "0000001 ????? ????? 111 ????? 01100 11", remu, R,
+
+      if (src2 == 0) { R(rd) = src1; } else { R(rd) = src1 % src2; });
   // 13.1. Multiplication Operations
   // xlen 32
   // 超级无敌坑爹的地方，这个地方的mulh是有符号的，所以要先转成有符号的
