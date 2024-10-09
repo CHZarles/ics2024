@@ -5,7 +5,47 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-int printf(const char *fmt, ...) { panic("Not implemented"); }
+int printf(const char *fmt, ...) {
+
+  // use putch to implement this function
+  va_list ap;
+  va_start(ap, fmt);
+  int out_idx = 0;
+  int fmt_idx = 0;
+  while (fmt[fmt_idx] != '\0') {
+    if (fmt[fmt_idx] == '%' && fmt[fmt_idx + 1] == 's') {
+      fmt_idx += 2;
+      char *str = va_arg(ap, char *);
+      for (int j = 0; str[j] != '\0'; j++) {
+        putch(str[j]);
+      }
+    } else if (fmt[fmt_idx] == '%' && fmt[fmt_idx + 1] == 'd') {
+      fmt_idx += 2;
+      int num = va_arg(ap, int);
+      char buf[20];
+      int j = 0;
+      if (num == 0) {
+        buf[j++] = '0';
+      } else {
+        if (num < 0) {
+          putch('-');
+          num = -num;
+        }
+        while (num > 0) {
+          buf[j++] = num % 10 + '0';
+          num /= 10;
+        }
+      }
+      for (int k = j - 1; k >= 0; k--) {
+        putch(buf[k]);
+      }
+    } else {
+      putch(fmt[fmt_idx++]);
+    }
+  }
+
+  return out_idx;
+}
 
 int vsprintf(char *out, const char *fmt, va_list ap) {
   // using vsnprintf to implement vsprintf
