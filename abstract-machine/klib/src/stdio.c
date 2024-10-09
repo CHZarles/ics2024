@@ -30,17 +30,17 @@ int snprintf(char *out, size_t n, const char *fmt, ...) {
 }
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
-  int i = 0;
-  for (; i < n && fmt[i] != '\0'; i++) {
-    // %s
-    if (fmt[i] == '%' && fmt[i + 1] == 's') {
+  int out_idx = 0;
+  int fmt_idx = 0;
+  while (out_idx < n - 1 && fmt[fmt_idx] != '\0') {
+    if (fmt[fmt_idx] == '%' && fmt[fmt_idx + 1] == 's') {
+      fmt_idx += 2;
       char *str = va_arg(ap, char *);
-      int j = 0;
-      for (; j < strlen(str) && i < n; j++, i++) {
-        out[i] = str[j];
+      for (int j = 0; str[j] != '\0' && out_idx < n - 1; j++, out_idx++) {
+        out[out_idx] = str[j];
       }
-      i--;
-    } else if (fmt[i] == '%' && fmt[i + 1] == 'd') {
+    } else if (fmt[fmt_idx] == '%' && fmt[fmt_idx + 1] == 'd') {
+      fmt_idx += 2;
       int num = va_arg(ap, int);
       char buf[20];
       int j = 0;
@@ -48,7 +48,9 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
         buf[j++] = '0';
       } else {
         if (num < 0) {
-          out[i++] = '-';
+          if (out_idx < n - 1) {
+            out[out_idx++] = '-';
+          }
           num = -num;
         }
         while (num > 0) {
@@ -56,22 +58,15 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
           num /= 10;
         }
       }
-      for (int k = j - 1; k >= 0 && i < n; k--, i++) {
-        out[i] = buf[k];
+      for (int k = j - 1; k >= 0 && out_idx < n - 1; k--, out_idx++) {
+        out[out_idx] = buf[k];
       }
-      i--;
-
     } else {
-      out[i] = fmt[i];
+      out[out_idx++] = fmt[fmt_idx++];
     }
   }
-  if (i < n)
-    out[i] = '\0';
-  else
-    out[n - 1] = '\0';
-
-  return i;
-  /* panic("Not implemented"); */
+  out[out_idx] = '\0';
+  return out_idx;
 }
 
 #endif
