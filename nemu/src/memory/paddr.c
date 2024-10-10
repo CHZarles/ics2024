@@ -92,7 +92,8 @@ word_t paddr_read(paddr_t addr, int len) {
 }
 
 void paddr_write(paddr_t addr, int len, word_t data) {
-  IFDEF(CONFIG_MTRACE, mtracer_info(mtracer.fp, addr, len, true, data));
+  IFDEF(CONFIG_MTRACE, if (addr >= mtracer.start && addr <= mtracer.end)
+                           mtracer_info(mtracer.fp, addr, len, true, data));
   if (likely(in_pmem(addr))) {
     pmem_write(addr, len, data);
     return;
