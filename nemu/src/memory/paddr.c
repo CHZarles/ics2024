@@ -82,7 +82,8 @@ void init_memtrace(const char *log_file) {
 word_t paddr_read(paddr_t addr, int len) {
   if (likely(in_pmem(addr))) {
     word_t val = pmem_read(addr, len);
-    IFDEF(CONFIG_MTRACE, mtracer_info(mtracer.fp, addr, len, false, val));
+    IFDEF(CONFIG_MTRACE, if (addr >= mtracer.start && addr <= mtracer.end)
+                             mtracer_info(mtracer.fp, addr, len, false, val));
     return val;
   }
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
