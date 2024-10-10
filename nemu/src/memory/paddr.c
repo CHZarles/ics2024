@@ -69,7 +69,7 @@ void init_memtrace(const char *log_file) {
 #ifdef CONFIG_MTRACE
   // init mtrace
   mtracer.fp = stdout;
-  mtracer.start = PMEM_LEFT;
+  mtracer.start = PMEM_LEFT; // NOTE: debug here
   mtracer.end = PMEM_RIGHT;
   // open log file
   FILE *mtrace_fp = fopen(log_file, "w");
