@@ -63,20 +63,45 @@ void init_disasm() {
 #endif
 }
 
+// a iringbuf code
+#define IRING_BUF_SIZE 10
+static char iringbuf[IRING_BUF_SIZE][100];
+size_t iringbuf_current_idx = 0;
+extern NEMUState nemu_state;
+
 void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte) {
   cs_insn *insn;
   size_t count = cs_disasm_dl(handle, code, nbyte, pc, 0, &insn);
   // display pc
-  printf("0x%" PRIx64 ":\t", pc);
+  /* printf("0x%" PRIx64 ":\t", pc); */
   // display binary code
-  for (int i = nbyte - 1; i >= 0; i--) {
-    printf("%02x ", code[i]);
-  }
-  printf("\n");
+  /* for (int i = nbyte - 1; i >= 0; i--) { */
+  /*   printf("%02x ", code[i]); */
+  /* } */
+  /* printf("\n"); */
   // debug log
-  for (size_t i = 0; i < count; i++) {
-    printf("0x%" PRIx64 ":\t%s\t\t%s\n", insn[i].address, insn[i].mnemonic,
-           insn[i].op_str);
+
+  // store current command info
+  sprintf(iringbuf[iringbuf_current_idx], "0x%" PRIx64 ":\t%s\t\t%s\n",
+          insn[0].address, insn[0].mnemonic, insn[0].op_str);
+  iringbuf_current_idx = iringbuf_current_idx % IRING_BUF_SIZE;
+
+  /* for (size_t i = 0; i < count; i++) { */
+  /*   printf("0x%" PRIx64 ":\t%s\t\t%s\n", insn[i].address, insn[i].mnemonic,
+   */
+  /*          insn[i].op_str); */
+  /* } */
+  if (nemu_state.state == NEMU_ABORT) {
+    // display iringbuf
+    printf(" ------------------------ \n");
+    for (int i = 0; i < IRING_BUF_SIZE; i++) {
+      if (i == iringbuf_current_idx) {
+        printf("===> %s", iringbuf[i]);
+        break;
+      }
+      printf("     %s", iringbuf[i]);
+    }
+    printf(" ------------------------ \n");
   }
   assert(count == 1);
   int ret = snprintf(str, size, "%s", insn->mnemonic);
