@@ -31,12 +31,6 @@ void init_log(const char *log_file) {
   Log("Log is written to %s", log_file ? log_file : "stdout");
 }
 
-void init_mtrace_log(const char *log_file) {
-  mtrace_fp = fopen(log_file, "w");
-  Assert(mtrace_fp, "Can not open '%s'", log_file);
-  Log("Log is written to %s", log_file);
-}
-
 bool log_enable() {
   return MUXDEF(CONFIG_TRACE,
                 (g_nr_guest_inst >= CONFIG_TRACE_START) &&

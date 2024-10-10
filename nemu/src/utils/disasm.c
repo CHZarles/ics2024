@@ -91,7 +91,7 @@ void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte) {
    */
   /*          insn[i].op_str); */
   /* } */
-  if (nemu_state.state == NEMU_ABORT) { // display error info
+  if (nemu_state.state == NEMU_ABORT) {
     // display iringbuf
     printf(" ------------------------ \n");
     for (int i = 0; i < IRING_BUF_SIZE; i++) {

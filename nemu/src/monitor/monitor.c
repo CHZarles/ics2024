@@ -23,6 +23,7 @@ void init_difftest(char *ref_so_file, long img_size, int port);
 void init_device();
 void init_sdb();
 void init_disasm();
+void init_memtrace(const char *log_file);
 
 static void welcome() {
   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN),
@@ -134,6 +135,9 @@ void init_monitor(int argc, char *argv[]) {
 
   /* Initialize devices. */
   IFDEF(CONFIG_DEVICE, init_device());
+
+  /* Initialize memory tracing. */
+  IFDEF(CONFIG_MEM_TRACE, init_mem_log(mtrace_log_file));
 
   /* Perform ISA dependent initialization. */
   init_isa();
