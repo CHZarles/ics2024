@@ -138,7 +138,7 @@ void init_monitor(int argc, char *argv[]) {
   IFDEF(CONFIG_DEVICE, init_device());
 
   /* Initialize memory tracing. */
-  IFDEF(CONFIG_MEM_TRACE, init_mem_log(mtrace_log_file));
+  IFDEF(CONFIG_MTRACE, init_memtrace(mtrace_log_file));
 
   /* Perform ISA dependent initialization. */
   init_isa();

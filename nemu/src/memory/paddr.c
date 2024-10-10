@@ -52,11 +52,11 @@ void init_mem() {
       PMEM_RIGHT);
 }
 
-#ifdef CONFIG_MEM_TRACE
+#ifdef CONFIG_MTRACE
 static struct {
   paddr_t start, end;
   // default set to stdout
-  FILE *fp = stdout;
+  FILE *fp;
 } mtracer;
 #endif
 
@@ -64,7 +64,12 @@ void mtracer_info(FILE *fp, paddr_t addr, int len, bool is_write) {
   fprintf(fp, "%c " FMT_PADDR " %d\n", is_write ? 'W' : 'R', addr, len);
 }
 void init_memtrace(const char *log_file) {
-#ifdef CONFIG_MEM_TRACE
+#ifdef CONFIG_MTRACE
+  // init mtrace
+  mtracer.fp = stdout;
+  mtracer.start = PMEM_LEFT;
+  mtracer.end = PMEM_RIGHT;
+  // open log file
   FILE *mtrace_fp = fopen(log_file, "w");
   Assert(mtrace_fp, "Can not open '%s'", log_file);
   Log("Log is written to %s", log_file);
