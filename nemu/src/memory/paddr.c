@@ -60,8 +60,10 @@ static struct {
 } mtracer;
 #endif
 
-void mtracer_info(FILE *fp, paddr_t addr, int len, bool is_write) {
-  fprintf(fp, "%c " FMT_PADDR " %d\n", is_write ? 'W' : 'R', addr, len);
+void mtracer_info(FILE *fp, paddr_t addr, int len, bool is_write,
+                  uint32_t val) {
+  fprintf(fp, "%c " FMT_PADDR " %d 0x%x\n", is_write ? 'W' : 'R', addr, len,
+          val);
 }
 void init_memtrace(const char *log_file) {
 #ifdef CONFIG_MTRACE
@@ -78,16 +80,18 @@ void init_memtrace(const char *log_file) {
 }
 
 word_t paddr_read(paddr_t addr, int len) {
-  IFDEF(CONFIG_MTRACE, mtracer_info(mtracer.fp, addr, len, false));
-  if (likely(in_pmem(addr)))
-    return pmem_read(addr, len);
+  if (likely(in_pmem(addr))) {
+    word_t val = pmem_read(addr, len);
+    IFDEF(CONFIG_MTRACE, mtracer_info(mtracer.fp, addr, len, false, val));
+    return val;
+  }
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
   return 0;
 }
 
 void paddr_write(paddr_t addr, int len, word_t data) {
-  IFDEF(CONFIG_MTRACE, mtracer_info(mtracer.fp, addr, len, true));
+  IFDEF(CONFIG_MTRACE, mtracer_info(mtracer.fp, addr, len, true, data));
   if (likely(in_pmem(addr))) {
     pmem_write(addr, len, data);
     return;
