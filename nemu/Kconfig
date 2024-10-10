@@ -130,6 +130,10 @@ config WATCHPOINT
   bool "Enable watchpoint"
   default n
 
+config MTRACE
+  bool "Enable memory tracer"
+  default n
+
 config TRACE
   bool "Enable tracer"
   default y
