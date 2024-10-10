@@ -78,6 +78,7 @@ void init_memtrace(const char *log_file) {
 }
 
 word_t paddr_read(paddr_t addr, int len) {
+  IFDEF(CONFIG_MTRACE, mtracer_info(mtracer.fp, addr, len, false));
   if (likely(in_pmem(addr)))
     return pmem_read(addr, len);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
@@ -86,6 +87,7 @@ word_t paddr_read(paddr_t addr, int len) {
 }
 
 void paddr_write(paddr_t addr, int len, word_t data) {
+  IFDEF(CONFIG_MTRACE, mtracer_info(mtracer.fp, addr, len, true));
   if (likely(in_pmem(addr))) {
     pmem_write(addr, len, data);
     return;
