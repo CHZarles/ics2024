@@ -70,6 +70,7 @@ int snprintf(char *out, size_t n, const char *fmt, ...) {
 }
 
 int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
+  return 0;
   int out_idx = 0;
   int fmt_idx = 0;
   while (out_idx < n - 1 && fmt[fmt_idx] != '\0') {
