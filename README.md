@@ -397,43 +397,226 @@ int main() {
 
 按我的理解，实验设计者把整个计算机系统分成了
 
-硬件裸机（bare-metal） +  抽象计算机（abstract machine, 下面简称AM） 两部分
+硬件裸机（bare-metal） + 抽象计算机（abstract machine, 下面简称AM） 两部分
 
 先前实验实现的 nemu 其实就是充当一个裸机的角色
 
 裸机可以用 （ISA，平台）表示，无论如果，逻辑提供了一个 图灵机(trm) 的角色
 
-裸机提供的最简单的 运行时环境 ：
-    1.把程序放在正确（约定）的位置 （说明有内存）
-    2.计算机自动执行。（指令实现正确
-    3.程序会结束 （指令实现正确
+裸机提供的最简单的 运行时环境 ：1.把程序放在正确（约定）的位置 （说明有内存）2.计算机自动执行。（指令实现正确3.程序会结束 （指令实现正确
 
 这个运行时环境是和平台相关的
 
 AM作为各种“高级软件”和硬件的中间层，首先要实现的就是 TRM api
 
-最简单的 TRM api 的功能应该有有
-    - 初始化trm 
-    - 通知 trm 程序运行结束
-    - 提供内存访问的起始地址和结束地址
+最简单的 TRM api 的功能应该有有 - 初始化trm - 通知 trm 程序运行结束 - 提供内存访问的起始地址和结束地址
 
 只要实现了上面的功能，那么之后我们就可以直接基于AM的trm api来进行开发更复杂的功能
 而不用在乎“硬件相关的实现”
 
+## 实现ftrace
 
+我发现x86下编译出来的文件的elf和nemu编译出来的非常不一样。后者的要简单不少。
+这个部分的任务只要关注，
 
+0. 读 section header， 找到 .symtab 和 .strtab
+1. 读入 .symtab , 找出类型为 FUNC 的项，
+   记录下对应的 Value（函数起始地址）， Size（函数大小）, Name(这个函数的名字在字符串表中的起始位置)
 
+2. 根据步骤一得到的这些东西，在strtab中查函数名
 
+````
 
+首先，我们需要包含必要的头文件，然后打开 ELF 文件并读取其 section header。我们需要找到 .symtab 和 .strtab 的 section header，然后读取这些 section 的内容。对于 .symtab，我们需要找到类型为 FUNC 的项，并记录下它们的 Value（函数起始地址），Size（函数大小）和 Name（函数名在字符串表中的起始位置）。然后，我们可以使用这些信息在 .strtab 中查找函数名。
 
+以下是实现这个功能的 C 代码：
 
+```c
+#include <elf.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+int main(int argc, char **argv) {
+    FILE *file = fopen(argv[1], "rb");
+    if (file == NULL) {
+        perror("Failed to open file");
+        return EXIT_FAILURE;
+    }
 
+    Elf64_Ehdr ehdr;
+    fread(&ehdr, sizeof(ehdr), 1, file);
 
+    fseek(file, ehdr.e_shoff, SEEK_SET);
 
+    Elf64_Shdr shdr[ehdr.e_shnum];
+    for (int i = 0; i < ehdr.e_shnum; i++) {
+        fread(&shdr[i], sizeof(Elf64_Shdr), 1, file);
+    }
 
+    char *strtab = malloc(shdr[ehdr.e_shstrndx].sh_size);
+    fseek(file, shdr[ehdr.e_shstrndx].sh_offset, SEEK_SET);
+    fread(strtab, shdr[ehdr.e_shstrndx].sh_size, 1, file);
 
+    Elf64_Shdr *symtab_shdr = NULL, *strtab_shdr = NULL;
+    for (int i = 0; i < ehdr.e_shnum; i++) {
+        if (strcmp(strtab + shdr[i].sh_name, ".symtab") == 0) {
+            symtab_shdr = &shdr[i];
+        } else if (strcmp(strtab + shdr[i].sh_name, ".strtab") == 0) {
+            strtab_shdr = &shdr[i];
+        }
+    }
 
+    if (symtab_shdr == NULL || strtab_shdr == NULL) {
+        fprintf(stderr, "Failed to find .symtab or .strtab\n");
+        return EXIT_FAILURE;
+    }
 
+    char *symtab = malloc(symtab_shdr->sh_size);
+    fseek(file, symtab_shdr->sh_offset, SEEK_SET);
+    fread(symtab, symtab_shdr->sh_size, 1, file);
 
+    char *strtab2 = malloc(strtab_shdr->sh_size);
+    fseek(file, strtab_shdr->sh_offset, SEEK_SET);
+    fread(strtab2, strtab_shdr->sh_size, 1, file);
 
+    for (int i = 0; i < symtab_shdr->sh_size / sizeof(Elf64_Sym); i++) {
+        Elf64_Sym *sym = (Elf64_Sym *)(symtab + i * sizeof(Elf64_Sym));
+        if (ELF64_ST_TYPE(sym->st_info) == STT_FUNC) {
+            printf("Value: %lx, Size: %lx, Name: %s\n", sym->st_value, sym->st_size, strtab2 + sym->st_name);
+        }
+    }
+
+    free(strtab);
+    free(symtab);
+    free(strtab2);
+    fclose(file);
+
+    return EXIT_SUCCESS;
+}
+````
+
+这个程序需要 ELF 文件的路径作为命令行参数。它首先打开文件并读取 ELF header。然后，它读取所有的 section header 并找到 .symtab 和 .strtab。然后，它读取这两个 section 的内容。对于 .symtab，它遍历所有的 symbol，并检查它们的类型。如果类型是 FUNC，它就打印出 symbol 的 Value，Size 和 Name。
+
+## User ───
+
+请你逐句解释这份代码
+
+## Copilot ───
+
+这段代码是用C语言编写的，用于读取ELF文件的.symtab和.strtab部分，并找出类型为FUNC的项。下面是对每一部分的解释：
+
+```c
+#include <elf.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+```
+
+这部分代码包含了必要的头文件。`elf.h`是用于处理ELF格式文件的头文件，`stdio.h`、`stdlib.h`和`string.h`是标准C库的头文件。
+
+```c
+int main(int argc, char **argv) {
+    FILE *file = fopen(argv[1], "rb");
+    if (file == NULL) {
+        perror("Failed to open file");
+        return EXIT_FAILURE;
+    }
+```
+
+这部分代码定义了程序的主函数。它打开一个文件，该文件的路径是从命令行参数中获取的。如果文件打开失败，它将打印错误信息并退出程序。
+
+```c
+    Elf64_Ehdr ehdr;
+    fread(&ehdr, sizeof(ehdr), 1, file);
+```
+
+这部分代码定义了一个`Elf64_Ehdr`结构体变量`ehdr`，并从文件中读取ELF头到这个变量。
+
+```c
+    fseek(file, ehdr.e_shoff, SEEK_SET);
+```
+
+这部分代码将文件的位置指针设置到section header的开始位置。
+
+```c
+    Elf64_Shdr shdr[ehdr.e_shnum];
+    for (int i = 0; i < ehdr.e_shnum; i++) {
+        fread(&shdr[i], sizeof(Elf64_Shdr), 1, file);
+    }
+```
+
+这部分代码定义了一个`Elf64_Shdr`结构体数组`shdr`，并从文件中读取所有的section header到这个数组。
+
+```c
+    char *strtab = malloc(shdr[ehdr.e_shstrndx].sh_size);
+    fseek(file, shdr[ehdr.e_shstrndx].sh_offset, SEEK_SET);
+    fread(strtab, shdr[ehdr.e_shstrndx].sh_size, 1, file);
+```
+
+这部分代码分配了一块内存用于存储section header string table，并从文件中读取这个table到分配的内存。
+
+```c
+    Elf64_Shdr *symtab_shdr = NULL, *strtab_shdr = NULL;
+    for (int i = 0; i < ehdr.e_shnum; i++) {
+        if (strcmp(strtab + shdr[i].sh_name, ".symtab") == 0) {
+            symtab_shdr = &shdr[i];
+        } else if (strcmp(strtab + shdr[i].sh_name, ".strtab") == 0) {
+            strtab_shdr = &shdr[i];
+        }
+    }
+```
+
+这部分代码遍历所有的section header，找到.symtab和.strtab的section header，并保存它们的指针。
+
+```c
+    if (symtab_shdr == NULL || strtab_shdr == NULL) {
+        fprintf(stderr, "Failed to find .symtab or .strtab\n");
+        return EXIT_FAILURE;
+    }
+```
+
+这部分代码检查是否找到了.symtab和.strtab的section header，如果没有找到，它将打印错误信息并退出程序。
+
+```c
+    char *symtab = malloc(symtab_shdr->sh_size);
+    fseek(file, symtab_shdr->sh_offset, SEEK_SET);
+    fread(symtab, symtab_shdr->sh_size, 1, file);
+```
+
+这部分代码分配了一块内存用于存储.symtab，并从文件中读取这个section到分配的内存。
+
+```c
+    char *strtab2 = malloc(strtab_shdr->sh_size);
+    fseek(file, strtab_shdr->sh_offset, SEEK_SET);
+    fread(strtab2, strtab_shdr->sh_size, 1, file);
+```
+
+这部分代码分配了一块内存用于存储.strtab，并从文件中读取这个section到分配的内存。
+
+```c
+    for (int i = 0; i < symtab_shdr->sh_size / sizeof(Elf64_Sym); i++) {
+        Elf64_Sym *sym = (Elf64_Sym *)(symtab + i * sizeof(Elf64_Sym));
+        if (ELF64_ST_TYPE(sym->st_info) == STT_FUNC) {
+            printf("Value: %lx, Size: %lx, Name: %s\n", sym->st_value, sym->st_size, strtab2 + sym->st_name);
+        }
+    }
+```
+
+这部分代码遍历.symtab中的所有symbol，找到类型为FUNC的symbol，并打印它们的Value，Size和Name。
+
+```c
+    free(strtab);
+    free(symtab);
+    free(strtab2);
+    fclose(file);
+
+    return EXIT_SUCCESS;
+}
+```
+
+这部分代码释放了分配的内存，并关闭了文件。然后，它返回成功状态码，表示程序正常结束。
+
+```
+
+```
