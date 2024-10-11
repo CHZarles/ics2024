@@ -7,6 +7,7 @@
 int func_cnt = 0;
 Funcinfo funcinfo[MAX_FUNC];
 
+char format_space[100];
 int func_stack_top = 0;
 
 void get_func_info(vaddr_t, vaddr_t *, char **);
@@ -38,11 +39,8 @@ void ftrace_call_func(vaddr_t source_addr, vaddr_t target_addr) {
   // display function call
   // 0x8000000c: call [_trm_init@0x80000260]
   // pc : call[funcname@funcaddr]
-  char format_space[100];
-  for (int i = 0; i < func_stack_top; i++) {
-    format_space[i] = ' ';
-  }
-  format_space[func_stack_top++] = '\0';
+  func_stack_top++;
+  format_space[func_stack_top * 2] = '\0';
   printf("%x :%s call[%s@%x]\n", target_addr, format_space, func_name,
          func_addr);
 }
@@ -73,12 +71,9 @@ void ftrace_ret_func(vaddr_t source_addr, vaddr_t target_addr) {
   Assert(func_stack_top > 0, "Function stack underflow");
   // display function return
   // 0x8000000c: ret [_trm_init@0x80000260]
-  char format_space[100];
-  for (int i = 0; i < func_stack_top; i++) {
-    format_space[i] = ' ';
-  }
   printf("func_stack_top: %d\n", func_stack_top);
-  format_space[func_stack_top--] = '\0';
+  format_space[func_stack_top * 2] = '\0';
+  func_stack_top--;
   printf("%x :%s ret[%s@%x]\n", target_addr, format_space, func_name,
          func_addr);
 }
@@ -179,5 +174,8 @@ int init_func_info(char *elf_file) {
   free(symtab);
   free(strtab);
   fclose(file);
+
+  // init format_space
+  memset(funcinfo, ' ', sizeof(funcinfo));
   return EXIT_SUCCESS;
 }
