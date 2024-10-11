@@ -72,6 +72,7 @@ void get_func_info(vaddr_t addr, vaddr_t *func_addr, char **func_name) {
         addr < funcinfo[i].value + funcinfo[i].size) {
       *func_addr = funcinfo[i].value;
       *func_name = funcinfo[i].func_name;
+      return;
     }
   }
   Assert(0, "Failed to find function name");
