@@ -6,14 +6,52 @@
 int func_cnt = 0;
 Funcinfo funcinfo[MAX_FUNC];
 
-char *get_func_name(vaddr_t addr) {
+int func_stack_top = 0;
+
+void get_func_info(vaddr_t, vaddr_t *, char **);
+
+void record_call_func(vaddr_t pc_addr) {
+
+  Assert(func_stack_top < MAX_FUNC, "Function stack overflow");
+  // display function call
+  // 0x8000000c: call [_trm_init@0x80000260]
+  // pc : call[funcname@funcaddr]
+  vaddr_t func_addr;
+  char *func_name;
+  get_func_info(pc_addr, &func_addr, &func_name);
+  char format_space[100];
+  for (int i = 0; i < func_stack_top; i++) {
+    format_space[i] = ' ';
+  }
+  format_space[func_stack_top] = '\0';
+  printf("%x :%s call[%s@%x]\n", pc_addr, format_space, func_name, func_addr);
+}
+void record_ret_func(vaddr_t pc_addr) {
+  Assert(func_stack_top > 0, "Function stack underflow");
+  // display function return
+  // 0x8000000c: ret [_trm_init@0x80000260]
+  vaddr_t func_addr;
+  char *func_name;
+  get_func_info(pc_addr, &func_addr, &func_name);
+  char format_space[100];
+  for (int i = 0; i < func_stack_top; i++) {
+    format_space[i] = ' ';
+  }
+  format_space[func_stack_top] = '\0';
+  printf("%x :%s ret[%s@%x]\n", pc_addr, format_space, func_name, func_addr);
+
+  func_stack_top--;
+}
+
+void get_func_info(vaddr_t addr, vaddr_t *func_addr, char **func_name) {
   for (int i = 0; i < func_cnt; i++) {
     if (funcinfo[i].value <= addr &&
         addr < funcinfo[i].value + funcinfo[i].size) {
-      return funcinfo[i].func_name;
+      *func_addr = funcinfo[i].value;
+      *func_name = funcinfo[i].func_name;
     }
   }
-  return NULL;
+  Assert(0, "Failed to find function name");
 }
 
 int init_func_info(char *elf_file) {

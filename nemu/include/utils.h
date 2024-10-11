@@ -19,7 +19,7 @@
 #include <common.h>
 // ftrace
 typedef struct {
-  vaddr_t value;
+  vaddr_t value, current_pc;
   uint32_t size;
   char func_name[50];
 } Funcinfo;
