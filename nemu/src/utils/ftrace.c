@@ -48,6 +48,7 @@ int save_func_info(char *img_file) {
   }
 
   Elf32_Shdr *symtab_shdr = NULL, *strtab_shdr = NULL;
+  printf("ehdr.e_shnum: %d\n", ehdr.e_shnum);
   for (int i = 0; i < ehdr.e_shnum; i++) {
     if (strcmp(shstrtab + shdr[i].sh_name, ".symtab") == 0) {
       symtab_shdr = &shdr[i];
@@ -84,6 +85,7 @@ int save_func_info(char *img_file) {
       funcinfo[func_cnt].value = sym->st_value;
       funcinfo[func_cnt].size = sym->st_size;
       strcpy(funcinfo[func_cnt].func_name, strtab + sym->st_name);
+      func_cnt++;
     }
   }
 
