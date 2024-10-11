@@ -133,7 +133,8 @@ static int decode_exec(Decode *s) {
   // 2.5.1. Unconditional Jumps
   INSTPAT(
       "??????? ????? ????? 000 ????? 11001 11", jalr, I, R(rd) = s->pc + 4;
-      s->dnpc = (src1 + imm) & 0xfffffffe; if (rd == 0 && imm == 0) { // ret
+      s->dnpc = (src1 + imm) & 0xfffffffe;
+      if (rd == 0 && imm == 0 && BITS(s->isa.inst, 19, 15) == 1) { // ret
         ftrace_ret_func(s->pc, s->dnpc);
       } else { ftrace_call_func(s->pc, s->dnpc); });
   // 2.6. Load and Store Instructions
