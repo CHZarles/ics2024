@@ -34,7 +34,6 @@ void ftrace_call_func(vaddr_t source_addr, vaddr_t target_addr) {
     return;
   }
   Assert(func_name != NULL, "Function name is NULL");
-  Assert(func_stack_top < MAX_FUNC, "Function stack overflow");
   // display function call
   // 0x8000000c: call [_trm_init@0x80000260]
   // pc : call[funcname@funcaddr]
