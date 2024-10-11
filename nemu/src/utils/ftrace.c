@@ -25,7 +25,7 @@ int init_func_info(char *elf_file) {
   FILE *file = fopen(elf_file, "rb");
   if (file == NULL) {
     printf("Failed to open file %s", elf_file);
-    perror("Failed to open file");
+    perror("");
     return EXIT_FAILURE;
   } else {
     printf("Open file %s success\n", elf_file);
