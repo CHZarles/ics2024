@@ -132,7 +132,7 @@ static int decode_exec(Decode *s) {
           R(rd) = (int32_t)src1 + (int32_t)imm);
   // 2.5.1. Unconditional Jumps
   INSTPAT("??????? ????? ????? 000 ????? 11001 11", jalr, I, R(rd) = s->pc + 4;
-          s->dnpc = (src1 + imm) & 0xfffffffe);
+          s->dnpc = (src1 + imm) & 0xfffffffe; ftrace_ret_func(s->dnpc));
   // 2.6. Load and Store Instructions
   INSTPAT("??????? ????? ????? 010 ????? 00000 11", lw, I,
           R(rd) = Mr(src1 + imm, 4));
