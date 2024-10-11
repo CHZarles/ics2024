@@ -13,8 +13,8 @@
 # See the Mulan PSL v2 for more details.
 #**************************************************************************************/
 
-$(info test $(IMG))
-$(info test $(IMAGE))
+$(info test1 $(IMG))
+$(info test2 $(IMAGE))
 # Sanity check
 ifeq ($(wildcard $(NEMU_HOME)/src/nemu-main.c),)
   $(error NEMU_HOME=$(NEMU_HOME) is not a NEMU repo)
