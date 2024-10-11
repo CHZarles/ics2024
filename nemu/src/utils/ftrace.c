@@ -49,7 +49,7 @@ int init_func_info(char *elf_file) {
 
   char *shstrtab = malloc(shdr[ehdr.e_shstrndx].sh_size);
   fseek(file, shdr[ehdr.e_shstrndx].sh_offset, SEEK_SET);
-  if (fread(shstrtab, shdr[ehdr.e_shstrndx].sh_size, 1, file) != 0) {
+  if (fread(shstrtab, shdr[ehdr.e_shstrndx].sh_size, 1, file) != 1) {
     fprintf(stderr, "Failed to read section string table\n");
     return EXIT_FAILURE;
   }
