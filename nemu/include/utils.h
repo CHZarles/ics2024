@@ -25,6 +25,7 @@ typedef struct {
 } Funcinfo;
 
 char *get_func_name(vaddr_t addr);
+void save_func_info(char *image_file);
 
 // ----------- state -----------
 
