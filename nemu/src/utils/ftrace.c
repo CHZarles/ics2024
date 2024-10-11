@@ -53,15 +53,15 @@ void ftrace_ret_func(vaddr_t source_addr, vaddr_t target_addr) {
   char *func_name = NULL;
   bool switch_func = false;
   for (int i = 0; i < func_cnt; i++) {
-    if (funcinfo[i].value <= target_addr &&
-        target_addr < funcinfo[i].value + funcinfo[i].size) {
+    if (funcinfo[i].value <= source_addr &&
+        source_addr < funcinfo[i].value + funcinfo[i].size) {
       // if source_addr is in the function, then it is not a function call
       switch_func = true;
-      if (funcinfo[i].value <= source_addr &&
-          source_addr < funcinfo[i].value + funcinfo[i].size) {
+      if (funcinfo[i].value <= target_addr &&
+          target_addr < funcinfo[i].value + funcinfo[i].size) {
         continue;
       }
-      func_addr = target_addr;
+      func_addr = source_addr;
       func_name = funcinfo[i].func_name;
       break;
     }
