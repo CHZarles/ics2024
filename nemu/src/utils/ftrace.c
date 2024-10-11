@@ -71,7 +71,7 @@ int init_func_info(char *elf_file) {
 
   char *symtab = malloc(symtab_shdr->sh_size);
   fseek(file, symtab_shdr->sh_offset, SEEK_SET);
-  if (fread(symtab, symtab_shdr->sh_size, 1, file) != 0) {
+  if (fread(symtab, symtab_shdr->sh_size, 1, file) != 1) {
     fprintf(stderr, "Failed to read symbol table\n");
     return EXIT_FAILURE;
   }
