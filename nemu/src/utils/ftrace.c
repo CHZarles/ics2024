@@ -16,14 +16,18 @@ char *get_func_name(vaddr_t addr) {
   return NULL;
 }
 
-int save_func_info(char *img_file) {
+int init_func_info(char *elf_file) {
+  if (elf_file == NULL) {
+    printf("Elf file is NULL\n");
+    return EXIT_FAILURE;
+  }
   // parse elf info from image file
-  FILE *file = fopen(img_file, "rb");
+  FILE *file = fopen(elf_file, "rb");
   if (file == NULL) {
     perror("Failed to open file");
     return EXIT_FAILURE;
   } else {
-    printf("Open file %s success\n", img_file);
+    printf("Open file %s success\n", elf_file);
   }
 
   Elf32_Ehdr ehdr;

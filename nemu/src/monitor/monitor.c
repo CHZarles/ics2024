@@ -48,6 +48,7 @@ void sdb_set_batch_mode();
 
 static char *log_file = NULL;
 static char *mtrace_log_file = NULL; // default name is set in Makefile
+static char *elf_file = NULL;
 static char *diff_so_file = NULL;
 static char *img_file = NULL;
 static int difftest_port = 1234;
@@ -79,13 +80,14 @@ static int parse_args(int argc, char *argv[]) {
       {"batch", no_argument, NULL, 'b'},
       {"log", required_argument, NULL, 'l'},
       {"mtrace_log", required_argument, NULL, 'm'},
+      {"elf_file", required_argument, NULL, 'e'},
       {"diff", required_argument, NULL, 'd'},
       {"port", required_argument, NULL, 'p'},
       {"help", no_argument, NULL, 'h'},
       {0, 0, NULL, 0},
   };
   int o;
-  while ((o = getopt_long(argc, argv, "-bhm:l:d:p:", table, NULL)) != -1) {
+  while ((o = getopt_long(argc, argv, "-bhe:m:l:d:p:", table, NULL)) != -1) {
     switch (o) {
     case 'b':
       sdb_set_batch_mode();
@@ -99,6 +101,9 @@ static int parse_args(int argc, char *argv[]) {
     case 'm':
       mtrace_log_file = optarg;
       break;
+    case 'e':
+      elf_file = optarg;
+      break;
     case 'd':
       diff_so_file = optarg;
       break;
@@ -110,6 +115,7 @@ static int parse_args(int argc, char *argv[]) {
       printf("\t-b,--batch              run with batch mode\n");
       printf("\t-l,--log=FILE           output log to FILE\n");
       printf("\t-m,--mtrace_log=FILE    output mtrace log to FILE\n");
+      printf("\t-e,--elf_file=FILE      elf_file of the IMAGE\n");
       printf("\t-d,--diff=REF_SO        run DiffTest with reference REF_SO\n");
       printf("\t-p,--port=PORT          run DiffTest with port PORT\n");
       printf("\n");
@@ -146,7 +152,7 @@ void init_monitor(int argc, char *argv[]) {
   /* Load the image to memory. This will overwrite the built-in image. */
   long img_size = load_img();
 
-  save_func_info(img_file);
+  init_func_info(elf_file);
 
   /* Initialize differential testing. */
   init_difftest(diff_so_file, img_size, difftest_port);
