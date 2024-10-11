@@ -34,9 +34,8 @@ void ftrace_call_func(vaddr_t pc_addr) {
   for (int i = 0; i < func_stack_top; i++) {
     format_space[i] = ' ';
   }
-  format_space[func_stack_top] = '\0';
+  format_space[func_stack_top++] = '\0';
   printf("%x :%s call[%s@%x]\n", pc_addr, format_space, func_name, func_addr);
-  func_stack_top++;
 }
 void ftrace_ret_func(vaddr_t pc_addr) {
   // check the pc_addr is in the range of function
@@ -61,10 +60,8 @@ void ftrace_ret_func(vaddr_t pc_addr) {
   for (int i = 0; i < func_stack_top; i++) {
     format_space[i] = ' ';
   }
-  format_space[func_stack_top] = '\0';
+  format_space[func_stack_top--] = '\0';
   printf("%x :%s ret[%s@%x]\n", pc_addr, format_space, func_name, func_addr);
-
-  func_stack_top--;
 }
 
 void get_func_info(vaddr_t addr, vaddr_t *func_addr, char **func_name) {
