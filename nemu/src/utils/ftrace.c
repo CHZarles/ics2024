@@ -72,7 +72,6 @@ void ftrace_ret_func(vaddr_t source_addr, vaddr_t target_addr) {
   Assert(func_stack_top > 0, "Function stack underflow");
   // display function return
   // 0x8000000c: ret [_trm_init@0x80000260]
-  printf("func_stack_top: %d\n", func_stack_top);
   printf("%x :", target_addr);
   for (int i = 0; i < (func_stack_top - 1) * 2; i++) {
     printf(" ");
