@@ -11,7 +11,18 @@ int func_stack_top = 0;
 void get_func_info(vaddr_t, vaddr_t *, char **);
 
 void ftrace_call_func(vaddr_t pc_addr) {
-
+  // check the pc_addr is in the range of function
+  bool in_func = false;
+  for (int i = 0; i < func_cnt; i++) {
+    if (funcinfo[i].value <= pc_addr &&
+        pc_addr < funcinfo[i].value + funcinfo[i].size) {
+      in_func = true;
+      break;
+    }
+  }
+  if (!in_func) {
+    return;
+  }
   Assert(func_stack_top < MAX_FUNC, "Function stack overflow");
   // display function call
   // 0x8000000c: call [_trm_init@0x80000260]
@@ -27,6 +38,18 @@ void ftrace_call_func(vaddr_t pc_addr) {
   printf("%x :%s call[%s@%x]\n", pc_addr, format_space, func_name, func_addr);
 }
 void ftrace_ret_func(vaddr_t pc_addr) {
+  // check the pc_addr is in the range of function
+  bool in_func = false;
+  for (int i = 0; i < func_cnt; i++) {
+    if (funcinfo[i].value <= pc_addr &&
+        pc_addr < funcinfo[i].value + funcinfo[i].size) {
+      in_func = true;
+      break;
+    }
+  }
+  if (!in_func) {
+    return;
+  }
   Assert(func_stack_top > 0, "Function stack underflow");
   // display function return
   // 0x8000000c: ret [_trm_init@0x80000260]
