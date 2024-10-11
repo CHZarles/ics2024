@@ -24,7 +24,8 @@ typedef struct {
   char func_name[50];
 } Funcinfo;
 
-char *get_func_name(vaddr_t addr);
+void ftrace_call_func(vaddr_t pc);
+void ftrace_ret_func(vaddr_t pc);
 int init_func_info(char *image_file);
 
 // ----------- state -----------
