@@ -12,7 +12,6 @@
 #
 # See the Mulan PSL v2 for more details.
 #**************************************************************************************/
-$(info debug $(IMG))
 -include $(NEMU_HOME)/../Makefile
 include $(NEMU_HOME)/scripts/build.mk
 
@@ -28,7 +27,7 @@ override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
 override ARGS += --mtrace_log=$(BUILD_DIR)/nemu-mtrace.txt
 override ARGS += $(ARGS_DIFF)
 override ARGS += -b
-override ARGS += -elf_file=$(IMAGE).elf
+override ARGS += -elf_file=$(ELF_PATH)
 
 # Command to execute NEMU
 IMG ?=
