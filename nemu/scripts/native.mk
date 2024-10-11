@@ -36,6 +36,7 @@ override ARGS += -elf_file=$(IMAGE).elf
 IMG ?=
 NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
 
+$(info debug $IMG)
 	
 run-env: $(BINARY) $(DIFF_REF_SO)
 
