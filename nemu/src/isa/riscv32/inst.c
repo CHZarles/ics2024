@@ -244,7 +244,7 @@ static int decode_exec(Decode *s) {
   // type j
   // 2.5.1. Unconditional Jumps
   INSTPAT("??????? ????? ????? ??? ????? 11011 11", jal, J, R(rd) = s->pc + 4;
-          s->dnpc = s->pc + imm);
+          s->dnpc = s->pc + imm; ftrace_call_func(s->dnpc));
 
   // type s
   // 2.6. Load and Store Instructions
