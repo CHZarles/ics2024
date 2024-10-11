@@ -12,18 +12,16 @@
 #
 # See the Mulan PSL v2 for more details.
 #**************************************************************************************/
-$(info debug $IMG)
+$(info debug $(IMG))
 -include $(NEMU_HOME)/../Makefile
 include $(NEMU_HOME)/scripts/build.mk
 
 include $(NEMU_HOME)/tools/difftest.mk
 
-$(info debug $IMG)
 compile_git:
 	$(call git_commit, "compile NEMU")
 $(BINARY):: compile_git
 
-$(info debug $IMG)
 # Some convenient rules
 
 override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
@@ -36,7 +34,6 @@ override ARGS += -elf_file=$(IMAGE).elf
 IMG ?=
 NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
 
-$(info debug $(IMG))
 	
 run-env: $(BINARY) $(DIFF_REF_SO)
 
