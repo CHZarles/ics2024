@@ -176,6 +176,6 @@ int init_func_info(char *elf_file) {
   fclose(file);
 
   // init format_space
-  memset(funcinfo, ' ', sizeof(funcinfo));
+  memset(format_space, ' ', sizeof(format_space));
   return EXIT_SUCCESS;
 }
