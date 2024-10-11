@@ -28,7 +28,7 @@ override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
 override ARGS += --mtrace_log=$(BUILD_DIR)/nemu-mtrace.txt
 override ARGS += $(ARGS_DIFF)
 override ARGS += -b
-override ARGS += -elf_file=$(ELF_PATH)
+override ARGS += -elf_file=$(IMAGE).elf)
 
 # Command to execute NEMU
 IMG ?=
