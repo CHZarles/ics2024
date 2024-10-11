@@ -23,6 +23,7 @@ compile_git:
 	$(call git_commit, "compile NEMU")
 $(BINARY):: compile_git
 
+$(info debug $IMG)
 # Some convenient rules
 
 override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
