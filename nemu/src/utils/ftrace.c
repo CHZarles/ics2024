@@ -72,10 +72,10 @@ void ftrace_ret_func(vaddr_t source_addr, vaddr_t target_addr) {
   // display function return
   // 0x8000000c: ret [_trm_init@0x80000260]
   printf("func_stack_top: %d\n", func_stack_top);
-  format_space[func_stack_top * 2] = '\0';
-  func_stack_top--;
   printf("%x :%s ret[%s@%x]\n", target_addr, format_space, func_name,
          func_addr);
+  format_space[func_stack_top * 2] = ' ';
+  func_stack_top--;
 }
 
 void get_func_info(vaddr_t addr, vaddr_t *func_addr, char **func_name) {
