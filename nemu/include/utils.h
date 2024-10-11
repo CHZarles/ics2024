@@ -21,11 +21,11 @@
 typedef struct {
   vaddr_t value;
   uint32_t size;
-  char *func_name;
+  char func_name[50];
 } Funcinfo;
 
 char *get_func_name(vaddr_t addr);
-void save_func_info(char *image_file);
+int save_func_info(char *image_file);
 
 // ----------- state -----------
 
