@@ -40,7 +40,7 @@ void ftrace_call_func(vaddr_t source_addr, vaddr_t target_addr) {
   func_stack_top++;
   printf("%x :", source_addr);
   for (int i = 0; i < (func_stack_top - 1) * 2; i++) {
-    printf("  ");
+    printf(" ");
   }
   printf("call[%s@%x]\n", func_name, func_addr);
 }
@@ -73,7 +73,7 @@ void ftrace_ret_func(vaddr_t source_addr, vaddr_t target_addr) {
   // 0x8000000c: ret [_trm_init@0x80000260]
   printf("%x :", target_addr);
   for (int i = 0; i < (func_stack_top - 1) * 2; i++) {
-    printf("  ");
+    printf(" ");
   }
   func_stack_top--;
   printf("ret[%s@%x]\n", func_name, func_addr);
