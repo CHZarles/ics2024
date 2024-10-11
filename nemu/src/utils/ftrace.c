@@ -60,6 +60,7 @@ void ftrace_ret_func(vaddr_t pc_addr) {
   for (int i = 0; i < func_stack_top; i++) {
     format_space[i] = ' ';
   }
+  printf("func_stack_top: %d\n", func_stack_top);
   format_space[func_stack_top--] = '\0';
   printf("%x :%s ret[%s@%x]\n", pc_addr, format_space, func_name, func_addr);
 }
