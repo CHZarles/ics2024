@@ -22,6 +22,8 @@ int save_func_info(char *img_file) {
   if (file == NULL) {
     perror("Failed to open file");
     return EXIT_FAILURE;
+  } else {
+    printf("Open file %s success\n", img_file);
   }
 
   Elf32_Ehdr ehdr;
