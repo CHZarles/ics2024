@@ -14,7 +14,7 @@
 #**************************************************************************************/
 
 $(info test1 $(IMG))
-$(info test2 $(IMAGE))
+$(info test2 $(ELF_PATH))
 # Sanity check
 ifeq ($(wildcard $(NEMU_HOME)/src/nemu-main.c),)
   $(error NEMU_HOME=$(NEMU_HOME) is not a NEMU repo)
