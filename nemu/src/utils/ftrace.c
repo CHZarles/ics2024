@@ -15,7 +15,7 @@ void ftrace_call_func(vaddr_t source_addr, vaddr_t target_addr) {
   // check the pc_addr is in the range of function
   vaddr_t func_addr = 0;
   char *func_name = NULL;
-  /* bool in_func = false; */
+  bool switch_func = false;
   for (int i = 0; i < func_cnt; i++) {
     if (funcinfo[i].value <= target_addr &&
         target_addr < funcinfo[i].value + funcinfo[i].size) {
@@ -26,13 +26,13 @@ void ftrace_call_func(vaddr_t source_addr, vaddr_t target_addr) {
       }
       func_addr = target_addr;
       func_name = funcinfo[i].func_name;
-      /* in_func = true; */
+      switch_func = true;
       break;
     }
   }
-  /* if (!in_func) { */
-  /*   return; */
-  /* } */
+  if (!switch_func) {
+    return;
+  }
   Assert(func_name != NULL, "Function name is NULL");
   Assert(func_stack_top < MAX_FUNC, "Function stack overflow");
   // display function call
@@ -51,20 +51,23 @@ void ftrace_ret_func(vaddr_t source_addr, vaddr_t target_addr) {
   // check the pc_addr is in the range of function
   vaddr_t func_addr = 0;
   char *func_name = NULL;
-  /* bool in_func = false; */
+  bool switch_func = false;
   for (int i = 0; i < func_cnt; i++) {
     if (funcinfo[i].value <= target_addr &&
         target_addr < funcinfo[i].value + funcinfo[i].size) {
       // if source_addr is in the function, then it is not a function call
+      switch_func = true;
       if (funcinfo[i].value <= source_addr &&
           source_addr < funcinfo[i].value + funcinfo[i].size) {
         continue;
       }
       func_addr = target_addr;
       func_name = funcinfo[i].func_name;
-      /* in_func = true; */
       break;
     }
+  }
+  if (!switch_func) {
+    return;
   }
   Assert(func_name != NULL, "Function name is NULL");
   Assert(func_stack_top > 0, "Function stack underflow");
