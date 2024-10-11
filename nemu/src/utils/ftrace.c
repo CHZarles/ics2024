@@ -41,7 +41,7 @@ int init_func_info(char *elf_file) {
 
   Elf32_Shdr shdr[ehdr.e_shnum];
   for (int i = 0; i < ehdr.e_shnum; i++) {
-    if (fread(&shdr[i], sizeof(Elf32_Shdr), 1, file) != 0) {
+    if (fread(&shdr[i], sizeof(Elf32_Shdr), 1, file) != 1) {
       fprintf(stderr, "Failed to read section header\n");
       return EXIT_FAILURE;
     }
