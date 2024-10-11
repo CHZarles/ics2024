@@ -30,7 +30,7 @@ run: insert-arg
 	$(MAKE) -C $(NEMU_HOME) ISA=$(ISA) run ARGS="$(NEMUFLAGS)" IMG=$(IMAGE).bin
 	
 	$(info DEBUG $(IMAGE))
-ELF_PATH = $(IMAGE).elf
+ELF_PATH ?= $(IMAGE).elf
 
 gdb: insert-arg
 	$(MAKE) -C $(NEMU_HOME) ISA=$(ISA) gdb ARGS="$(NEMUFLAGS)" IMG=$(IMAGE).bin
