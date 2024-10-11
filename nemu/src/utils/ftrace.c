@@ -1,4 +1,5 @@
 
+#include "common.h"
 #include <elf.h>
 #include <utils.h>
 
@@ -10,59 +11,73 @@ int func_stack_top = 0;
 
 void get_func_info(vaddr_t, vaddr_t *, char **);
 
-void ftrace_call_func(vaddr_t pc_addr) {
+void ftrace_call_func(vaddr_t source_addr, vaddr_t target_addr) {
   // check the pc_addr is in the range of function
-  bool in_func = false;
+  vaddr_t func_addr = 0;
+  char *func_name = NULL;
+  /* bool in_func = false; */
   for (int i = 0; i < func_cnt; i++) {
-    if (funcinfo[i].value <= pc_addr &&
-        pc_addr < funcinfo[i].value + funcinfo[i].size) {
-      in_func = true;
+    if (funcinfo[i].value <= target_addr &&
+        target_addr < funcinfo[i].value + funcinfo[i].size) {
+      // if source_addr is in the function, then it is not a function call
+      if (funcinfo[i].value <= source_addr &&
+          source_addr < funcinfo[i].value + funcinfo[i].size) {
+        continue;
+      }
+      func_addr = target_addr;
+      func_name = funcinfo[i].func_name;
+      /* in_func = true; */
       break;
     }
   }
-  if (!in_func) {
-    return;
-  }
+  /* if (!in_func) { */
+  /*   return; */
+  /* } */
+  Assert(func_name != NULL, "Function name is NULL");
   Assert(func_stack_top < MAX_FUNC, "Function stack overflow");
   // display function call
   // 0x8000000c: call [_trm_init@0x80000260]
   // pc : call[funcname@funcaddr]
-  vaddr_t func_addr;
-  char *func_name;
-  get_func_info(pc_addr, &func_addr, &func_name);
   char format_space[100];
   for (int i = 0; i < func_stack_top; i++) {
     format_space[i] = ' ';
   }
   format_space[func_stack_top++] = '\0';
-  printf("%x :%s call[%s@%x]\n", pc_addr, format_space, func_name, func_addr);
+  printf("%x :%s call[%s@%x]\n", target_addr, format_space, func_name,
+         func_addr);
 }
-void ftrace_ret_func(vaddr_t pc_addr) {
+void ftrace_ret_func(vaddr_t source_addr, vaddr_t target_addr) {
   // check the pc_addr is in the range of function
-  bool in_func = false;
+  // check the pc_addr is in the range of function
+  vaddr_t func_addr = 0;
+  char *func_name = NULL;
+  /* bool in_func = false; */
   for (int i = 0; i < func_cnt; i++) {
-    if (funcinfo[i].value <= pc_addr &&
-        pc_addr < funcinfo[i].value + funcinfo[i].size) {
-      in_func = true;
+    if (funcinfo[i].value <= target_addr &&
+        target_addr < funcinfo[i].value + funcinfo[i].size) {
+      // if source_addr is in the function, then it is not a function call
+      if (funcinfo[i].value <= source_addr &&
+          source_addr < funcinfo[i].value + funcinfo[i].size) {
+        continue;
+      }
+      func_addr = target_addr;
+      func_name = funcinfo[i].func_name;
+      /* in_func = true; */
       break;
     }
   }
-  if (!in_func) {
-    return;
-  }
+  Assert(func_name != NULL, "Function name is NULL");
   Assert(func_stack_top > 0, "Function stack underflow");
   // display function return
   // 0x8000000c: ret [_trm_init@0x80000260]
-  vaddr_t func_addr;
-  char *func_name;
-  get_func_info(pc_addr, &func_addr, &func_name);
   char format_space[100];
   for (int i = 0; i < func_stack_top; i++) {
     format_space[i] = ' ';
   }
   printf("func_stack_top: %d\n", func_stack_top);
   format_space[func_stack_top--] = '\0';
-  printf("%x :%s ret[%s@%x]\n", pc_addr, format_space, func_name, func_addr);
+  printf("%x :%s ret[%s@%x]\n", target_addr, format_space, func_name,
+         func_addr);
 }
 
 void get_func_info(vaddr_t addr, vaddr_t *func_addr, char **func_name) {
