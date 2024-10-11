@@ -7,7 +7,6 @@
 int func_cnt = 0;
 Funcinfo funcinfo[MAX_FUNC];
 
-char format_space[100];
 int func_stack_top = 0;
 
 void get_func_info(vaddr_t, vaddr_t *, char **);
@@ -40,9 +39,11 @@ void ftrace_call_func(vaddr_t source_addr, vaddr_t target_addr) {
   // 0x8000000c: call [_trm_init@0x80000260]
   // pc : call[funcname@funcaddr]
   func_stack_top++;
-  format_space[func_stack_top * 2] = '\0';
-  printf("%x :%s call[%s@%x]\n", target_addr, format_space, func_name,
-         func_addr);
+  printf("%x :", source_addr);
+  for (int i = 0; i < (func_stack_top - 1) * 2; i++) {
+    printf(" ");
+  }
+  printf("call[%s@%x]\n", func_name, func_addr);
 }
 void ftrace_ret_func(vaddr_t source_addr, vaddr_t target_addr) {
   // check the pc_addr is in the range of function
@@ -72,10 +73,12 @@ void ftrace_ret_func(vaddr_t source_addr, vaddr_t target_addr) {
   // display function return
   // 0x8000000c: ret [_trm_init@0x80000260]
   printf("func_stack_top: %d\n", func_stack_top);
-  printf("%x :%s ret[%s@%x]\n", target_addr, format_space, func_name,
-         func_addr);
-  format_space[func_stack_top * 2] = ' ';
+  printf("%x :", target_addr);
+  for (int i = 0; i < func_stack_top * 2; i++) {
+    printf(" ");
+  }
   func_stack_top--;
+  printf("ret[%s@%x]\n", func_name, func_addr);
 }
 
 void get_func_info(vaddr_t addr, vaddr_t *func_addr, char **func_name) {
@@ -175,7 +178,5 @@ int init_func_info(char *elf_file) {
   free(strtab);
   fclose(file);
 
-  // init format_space
-  memset(format_space, ' ', sizeof(format_space));
   return EXIT_SUCCESS;
 }
