@@ -31,11 +31,9 @@ override ARGS += -b
 override ARGS += -elf_file=$(BUILD_DIR)/$(IMAGE).elf
 
 # Command to execute NEMU
-$(info "IMG :" $(IMG))
 IMG ?=
 NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
 
-$(info "IMG :" $(IMG))
 	
 run-env: $(BINARY) $(DIFF_REF_SO)
 
