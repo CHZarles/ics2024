@@ -19,7 +19,7 @@
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   // get the current state of the CPU
-  if (pc != ref_r->pc)
+  if (cpu.pc != ref_r->pc)
     return false;
   for (int i = 0; i < NR_GPR; i++) {
     if (ref_r->gpr[i] != gpr(i))
