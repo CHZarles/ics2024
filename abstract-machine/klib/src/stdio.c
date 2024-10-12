@@ -91,7 +91,7 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
         printf("INT_MIN\n");
         out[out_idx++] = '-';
         /* strcpy(buf, "2147483648"); */
-        strcpy(buf, "8463847412)");
+        strcpy(buf, "8463847412");
         j += 10;
       } else {
         if (num < 0) {
