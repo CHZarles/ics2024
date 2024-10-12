@@ -137,6 +137,11 @@ int strncmp(const char *s1, const char *s2, size_t n) {
     s2++;
   }
 
+  if (*s1 == '\0' && *s2 != '\0') {
+    ret = -1;
+  } else if (*s1 != '\0' && *s2 == '\0') {
+    ret = 1;
+  }
   return ret;
 }
 
