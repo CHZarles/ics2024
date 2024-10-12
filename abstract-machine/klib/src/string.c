@@ -103,6 +103,7 @@ int strcmp(const char *s1, const char *s2) {
   /* • a positive value if s1 is greater than s2. */
   /**/
   /**/
+  // special case
   int ret = 0;
 
   while (*s1 != '\0' && *s2 != '\0') {
@@ -113,7 +114,11 @@ int strcmp(const char *s1, const char *s2) {
     s1++;
     s2++;
   }
-
+  if (*s1 == '\0' && *s2 != '\0') {
+    ret = -1;
+  } else if (*s1 != '\0' && *s2 == '\0') {
+    ret = 1;
+  }
   return ret;
 }
 
