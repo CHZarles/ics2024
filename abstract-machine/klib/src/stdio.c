@@ -88,7 +88,6 @@ int vsnprintf(char *out, size_t n, const char *fmt, va_list ap) {
       if (num == 0) {
         buf[j++] = '0';
       } else if (num == INT_MIN) {
-        printf("INT_MIN\n");
         out[out_idx++] = '-';
         /* strcpy(buf, "2147483648"); */
         strcpy(buf, "8463847412");
