@@ -18,14 +18,14 @@
 #include <isa.h>
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
-  printf("here\n");
-  return true;
   // get the current state of the CPU
-  Assert(pc == ref_r->pc, "pc mismatch");
+  if (pc != ref_r->pc)
+    return false;
   for (int i = 0; i < 32; i++) {
-    Assert(ref_r->gpr[i] == gpr(i), "gpr[%d] mismatch", i);
+    if (ref_r->gpr[i] != gpr(i))
+      return false;
   }
-  return false;
+  return true;
 }
 
 void isa_difftest_attach() {}
