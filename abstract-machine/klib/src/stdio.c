@@ -40,6 +40,27 @@ int printf(const char *fmt, ...) {
       for (int k = j - 1; k >= 0; k--) {
         putch(buf[k]);
       }
+    } else if (fmt[fmt_idx] == '%' && fmt[fmt_idx + 1] == 'x') { // hex
+      fmt_idx += 2;
+      int num = va_arg(ap, int);
+      char buf[20];
+      int j = 0;
+      if (num == 0) {
+        buf[j++] = '0';
+      } else {
+        while (num > 0) {
+          int digit = num % 16;
+          if (digit < 10) {
+            buf[j++] = digit + '0';
+          } else {
+            buf[j++] = digit - 10 + 'a';
+          }
+          num /= 16;
+        }
+      }
+      for (int k = j - 1; k >= 0; k--) {
+        putch(buf[k]);
+      }
     } else {
       putch(fmt[fmt_idx++]);
     }
