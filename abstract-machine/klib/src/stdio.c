@@ -41,7 +41,6 @@ int printf(const char *fmt, ...) {
         putch(buf[k]);
       }
     } else if (fmt[fmt_idx] == '%' && fmt[fmt_idx + 1] == 'x') { // hex
-      printf("here ....");
       fmt_idx += 2;
       int num = va_arg(ap, int);
       char buf[20];
