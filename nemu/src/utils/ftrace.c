@@ -10,8 +10,11 @@ Funcinfo funcinfo[MAX_FUNC];
 int func_stack_top = 0;
 
 void get_func_info(vaddr_t, vaddr_t *, char **);
-
+/* #define DEBUG */
 void ftrace_call_func(vaddr_t source_addr, vaddr_t target_addr) {
+#ifndef DEBUG
+  return;
+#endif
   // check the pc_addr is in the range of function
   vaddr_t func_addr = 0;
   char *func_name = NULL;
@@ -45,6 +48,9 @@ void ftrace_call_func(vaddr_t source_addr, vaddr_t target_addr) {
   printf("call[%s@%x]\n", func_name, func_addr);
 }
 void ftrace_ret_func(vaddr_t source_addr, vaddr_t target_addr) {
+#ifndef DEBUG
+  return;
+#endif
   // check the pc_addr is in the range of function
   // check the pc_addr is in the range of function
   vaddr_t func_addr = 0;
