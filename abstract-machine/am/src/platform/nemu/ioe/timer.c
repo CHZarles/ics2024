@@ -9,7 +9,7 @@ void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uptime->us = ((uint64_t)high32 << 32) + low32;
   printf("low32: %d \n", low32);
   printf("high32: %d \n", high32);
-  printf("uptime: %ld \n", uptime->us);
+  printf("uptime: %d \n", uptime->us);
 }
 
 void __am_timer_rtc(AM_TIMER_RTC_T *rtc) {
