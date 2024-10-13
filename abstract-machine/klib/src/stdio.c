@@ -42,7 +42,7 @@ int printf(const char *fmt, ...) {
       }
     } else if (fmt[fmt_idx] == '%' && fmt[fmt_idx + 1] == 'x') { // hex
       fmt_idx += 2;
-      uint32_t num = va_arg(ap, uint32_t);
+      uint64_t num = va_arg(ap, uint64_t);
       char buf[20];
       int j = 0;
       if (num == 0) {
