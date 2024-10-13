@@ -25,7 +25,6 @@ static uint8_t *p_space = NULL;
 
 uint8_t *new_space(int size) {
   uint8_t *p = p_space;
-  printf("p_space: %x\n", *p_space);
   // page aligned;
   size = (size + (PAGE_SIZE - 1)) & ~PAGE_MASK;
   p_space += size;
