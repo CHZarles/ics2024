@@ -74,7 +74,7 @@ void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
   check_bound(map, addr);
   paddr_t offset = addr - map->low;
   // dev dtrace
-  printf("map_write: %s, offset: %x, len: %d\n", map->name, offset, len);
+  printf("map_write: %s, offset: 0x%x, len: %d\n", map->name, offset, len);
   host_write(map->space + offset, len, data);
   invoke_callback(map->callback, offset, len, true);
 }
