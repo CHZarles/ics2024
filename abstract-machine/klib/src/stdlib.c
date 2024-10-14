@@ -31,17 +31,28 @@ int atoi(const char *nptr) {
 extern char _heap_start;
 uint32_t malloc_position = (uint32_t)&_heap_start;
 void *malloc(size_t size) {
-  // On native, malloc() will be called during initializaion of C runtime.
+  // Align the size to 4 bytes
+  size = (size + 3) & ~3;
+
+  // On native, malloc() will be called during initialization of C runtime.
   // Therefore do not call panic() here, else it will yield a dead recursion:
   //   panic() -> putchar() -> (glibc) -> malloc() -> panic()
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
   /* panic("Not implemented"); */
-  malloc_position += size;
-  printf("malloc addr %x\n", malloc_position);
-  void *ret = (uint8_t *)malloc_position;
-  return ret;
 
+  // Check for overflow
+  if (malloc_position + size < malloc_position) {
+    return NULL;
+  }
+
+  uint32_t old_malloc_position = malloc_position;
+  malloc_position += size;
+
+  printf("malloc addr %x\n", malloc_position);
+
+  return (void *)old_malloc_position;
 #endif
+
   return NULL;
 }
 
