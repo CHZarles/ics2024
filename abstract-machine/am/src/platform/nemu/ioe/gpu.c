@@ -43,11 +43,13 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
    * 每个像素用32位整数以00RRGGBB的方式描述颜色. */
   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t *pixels = ctl->pixels;
-  uint32_t offset = ctl->x * ctl->w + ctl->y;
+  uint32_t offset_x = ctl->x;
+  uint32_t offset_y = ctl->y;
   for (int i = 0; i < ctl->w; ++i) {
     for (int j = 0; j < ctl->h; ++j) {
       uint32_t pixel = pixels[i * ctl->w + j];
-      fb[offset + i * ctl->w + j] = pixel;
+      int idx = (offset_x + i) + (offset_y + j) * ctl->w;
+      fb[idx] = pixel;
     }
   }
   if (ctl->sync) {
