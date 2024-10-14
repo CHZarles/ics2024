@@ -5,18 +5,17 @@
 
 void __am_gpu_init() {
 
-  int i;
-/* int w = 0; // TODO: get the correct width */
-/* int h = 0; // TODO: get the correct height */
-#define N 32
-  int w = io_read(AM_GPU_CONFIG).width;
-  int h = io_read(AM_GPU_CONFIG).height;
-  printf("w = %d, h = %d\n", w, h);
-  /* w = 100, h = 100; */
-  uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
-  for (i = 0; i < w * h; i++)
-    fb[i] = i;
-  outl(SYNC_ADDR, 1);
+  /* int i; */
+  /* int w = 0; // TODO: get the correct width */
+  /* int h = 0; // TODO: get the correct height */
+  /* #define N 32 */
+  /*   int w = io_read(AM_GPU_CONFIG).width; */
+  /*   int h = io_read(AM_GPU_CONFIG).height; */
+  /*   printf("w = %d, h = %d\n", w, h); */
+  /*   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR; */
+  /*   for (i = 0; i < w * h; i++) */
+  /*     fb[i] = i; */
+  /*   outl(SYNC_ADDR, 1); */
 }
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
