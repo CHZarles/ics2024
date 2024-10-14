@@ -9,10 +9,10 @@ void __am_gpu_init() {
 /* int w = 0; // TODO: get the correct width */
 /* int h = 0; // TODO: get the correct height */
 #define N 32
-  int w = io_read(AM_GPU_CONFIG).width / N;
-  int h = io_read(AM_GPU_CONFIG).height / N;
+  int w = io_read(AM_GPU_CONFIG).width;
+  int h = io_read(AM_GPU_CONFIG).height;
   printf("w = %d, h = %d\n", w, h);
-  w = 100, h = 100;
+  /* w = 100, h = 100; */
   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
   for (i = 0; i < w * h; i++)
     fb[i] = 200;
