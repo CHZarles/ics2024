@@ -20,8 +20,9 @@ void __am_gpu_init() {
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
   // read info rom VGACTL_ADDR
-  uint16_t width = inw(VGACTL_ADDR);
-  uint16_t height = inw(VGACTL_ADDR + 2);
+  uint32_t screen_wh = inl(VGACTL_ADDR);
+  uint32_t height = screen_wh & 0xffff;
+  uint32_t width = screen_wh >> 16;
   *cfg = (AM_GPU_CONFIG_T){.present = true,
                            .has_accel = false,
                            .width = width,
@@ -49,7 +50,8 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   uint32_t screen_w = inl(VGACTL_ADDR) >> 16;
   for (int i = y; i < y + h; i++) {
     for (int j = x; j < x + w; j++) {
-      fb[screen_w * i + j] = pixels[w * (i - y) + (j - x)]; // 缓冲区是一个像素块
+      fb[screen_w * i + j] =
+          pixels[w * (i - y) + (j - x)]; // 缓冲区是一个像素块
     }
   }
 
