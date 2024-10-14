@@ -40,8 +40,6 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
    * 向屏幕(x, y)坐标处绘制w*h的矩形图像.
    * 图像像素按行优先方式存储在pixels中,
    * 每个像素用32位整数以00RRGGBB的方式描述颜色. */
-  printf("ctl->x = %d, ctl->y = %d, ctl->w = %d, ctl->h = %d\n", ctl->x, ctl->y,
-         ctl->w, ctl->h);
   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
   uint32_t *pixels = ctl->pixels;
   uint32_t offset_x = ctl->x;
