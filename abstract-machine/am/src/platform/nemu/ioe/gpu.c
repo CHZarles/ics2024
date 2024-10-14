@@ -20,9 +20,11 @@ void __am_gpu_init() {
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
   // read info rom VGACTL_ADDR
-  uint32_t screen_wh = inl(VGACTL_ADDR);
-  uint32_t height = screen_wh & 0xffff;
-  uint32_t width = screen_wh >> 16;
+  uint32_t width = inw(VGACTL_ADDR);
+  uint32_t height = inw(VGACTL_ADDR + 2);
+  /* uint32_t screen_wh = inl(VGACTL_ADDR); */
+  /* uint32_t height = screen_wh & 0xffff; */
+  /* uint32_t width = screen_wh >> 16; */
   *cfg = (AM_GPU_CONFIG_T){.present = true,
                            .has_accel = false,
                            .width = width,
