@@ -1,6 +1,6 @@
 #include <am.h>
+#include <klib.h>
 #include <nemu.h>
-
 #define SYNC_ADDR (VGACTL_ADDR + 4)
 
 void __am_gpu_init() {
@@ -9,8 +9,9 @@ void __am_gpu_init() {
 /* int w = 0; // TODO: get the correct width */
 /* int h = 0; // TODO: get the correct height */
 #define N 32
-  uint16_t w = inw(VGACTL_ADDR) / N;
-  uint16_t h = inw(VGACTL_ADDR + 2) / N;
+  int w = io_read(AM_GPU_CONFIG).width / N;
+  int h = io_read(AM_GPU_CONFIG).height / N;
+  printf("w: %d \n", w);
   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
   for (i = 0; i < w * h; i++)
     fb[i] = i;
