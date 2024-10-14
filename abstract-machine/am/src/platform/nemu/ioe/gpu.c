@@ -40,6 +40,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
    * 向屏幕(x, y)坐标处绘制w*h的矩形图像.
    * 图像像素按行优先方式存储在pixels中,
    * 每个像素用32位整数以00RRGGBB的方式描述颜色. */
+
   int x = ctl->x, y = ctl->y, w = ctl->w, h = ctl->h;
   if (!ctl->sync && (w == 0 || h == 0))
     return;
@@ -48,7 +49,7 @@ void __am_gpu_fbdraw(AM_GPU_FBDRAW_T *ctl) {
   uint32_t screen_w = inl(VGACTL_ADDR) >> 16;
   for (int i = y; i < y + h; i++) {
     for (int j = x; j < x + w; j++) {
-      fb[screen_w * i + j] = pixels[w * (i - y) + (j - x)];
+      fb[screen_w * i + j] = pixels[w * (i - y) + (j - x)]; // 缓冲区是一个像素块
     }
   }
 
