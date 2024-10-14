@@ -36,8 +36,8 @@ void *malloc(size_t size) {
   //   panic() -> putchar() -> (glibc) -> malloc() -> panic()
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
   /* panic("Not implemented"); */
-  void *ret = (uint8_t *)malloc_position;
   malloc_position += size;
+  void *ret = (uint8_t *)malloc_position;
   return ret;
 
 #endif
