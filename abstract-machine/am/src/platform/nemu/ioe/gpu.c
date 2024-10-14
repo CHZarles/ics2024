@@ -20,8 +20,8 @@ void __am_gpu_init() {
 
 void __am_gpu_config(AM_GPU_CONFIG_T *cfg) {
   // read info rom VGACTL_ADDR
-  uint32_t width = inw(VGACTL_ADDR);
-  uint32_t height = inw(VGACTL_ADDR + 2);
+  uint32_t height = inw(VGACTL_ADDR);
+  uint32_t width = inw(VGACTL_ADDR + 2);
   printf("width = %d, height = %d\n", width, height);
   uint32_t screen_wh = inl(VGACTL_ADDR);
   height = screen_wh & 0xffff;
