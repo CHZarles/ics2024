@@ -37,6 +37,7 @@ void *malloc(size_t size) {
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
   /* panic("Not implemented"); */
   malloc_position += size;
+  printf("malloc addr %x\n", malloc_position);
   void *ret = (uint8_t *)malloc_position;
   return ret;
 
