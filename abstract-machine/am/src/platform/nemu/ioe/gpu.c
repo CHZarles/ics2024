@@ -12,6 +12,7 @@ void __am_gpu_init() {
   int w = io_read(AM_GPU_CONFIG).width / N;
   int h = io_read(AM_GPU_CONFIG).height / N;
   printf("w = %d, h = %d\n", w, h);
+  w = 100, h = 100;
   uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
   for (i = 0; i < w * h; i++)
     fb[i] = 200;
