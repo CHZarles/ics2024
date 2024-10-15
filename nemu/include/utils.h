@@ -21,7 +21,7 @@
 typedef struct {
   vaddr_t value, current_pc;
   uint32_t size;
-  char func_name[50];
+  char func_name[100];
 } Funcinfo;
 
 void ftrace_call_func(vaddr_t source, vaddr_t target);
