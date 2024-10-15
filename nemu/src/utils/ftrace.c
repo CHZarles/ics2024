@@ -10,7 +10,7 @@ Funcinfo funcinfo[MAX_FUNC];
 int func_stack_top = 0;
 
 void get_func_info(vaddr_t, vaddr_t *, char **);
-#define NO_FUNC_TRACE
+/* #define NO_FUNC_TRACE */
 void ftrace_call_func(vaddr_t source_addr, vaddr_t target_addr) {
 #ifndef NO_FUNC_TRACE
   return;
