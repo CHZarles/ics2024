@@ -28,9 +28,12 @@ int atoi(const char *nptr) {
 }
 
 // recored malloc location
-extern char _heap_start;
-uint32_t malloc_position = (uint32_t)&_heap_start;
+extern Area heap;
+uint8_t *malloc_position = NULL;
 void *malloc(size_t size) {
+  if (malloc_position == NULL)
+    malloc_position = heap.start;
+
   // Align the size to 4 bytes
   size = (size + 3) & ~3;
 
@@ -45,7 +48,7 @@ void *malloc(size_t size) {
     return NULL;
   }
 
-  uint32_t old_malloc_position = malloc_position;
+  uint8_t *old_malloc_position = malloc_position;
   malloc_position += size;
 
   printf("malloc addr %x\n", malloc_position);
