@@ -31,18 +31,15 @@ int atoi(const char *nptr) {
 extern Area heap;
 uint8_t *malloc_position = NULL;
 void *malloc(size_t size) {
+  printf("call klib malloc\n");
   if (malloc_position == NULL)
-    malloc_position = heap.start;
-
-  // Align the size to 4 bytes
-  size = (size + 3) & ~3;
+    malloc_position = (void *)ROUNDUP(heap.start, 8);
 
   // On native, malloc() will be called during initialization of C runtime.
   // Therefore do not call panic() here, else it will yield a dead recursion:
   //   panic() -> putchar() -> (glibc) -> malloc() -> panic()
-#if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
+  /* #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__)) */
   /* panic("Not implemented"); */
-  printf("Using klib malloc\n");
   // Check for overflow
   if ((uint8_t *)malloc_position + size > (uint8_t *)heap.end) {
     printf("malloc failed,  malloc_position %x, size %d\n", malloc_position,
@@ -51,14 +48,18 @@ void *malloc(size_t size) {
   }
 
   uint8_t *old_malloc_position = malloc_position;
+  size = (size_t)ROUNDUP(size, 8);
   malloc_position += size;
 
   printf("malloc addr %x\n", malloc_position);
 
   return (void *)old_malloc_position;
-#endif
-
-  return NULL;
+  /* #endif */
+  /*   printf( */
+  /*       "Not meet !(defined(__ISA_NATIVE__) &&
+   * defined(__NATIVE_USE_KLIB__))\n"); */
+  /**/
+  /*   return NULL; */
 }
 
 void free(void *ptr) {}
