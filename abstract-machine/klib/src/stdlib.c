@@ -44,7 +44,7 @@ void *malloc(size_t size) {
   /* panic("Not implemented"); */
 
   // Check for overflow
-  if ((uint8_t *)malloc_position + size < (uint8_t *)heap.end) {
+  if ((uint8_t *)malloc_position + size > (uint8_t *)heap.end) {
     return NULL;
   }
 
