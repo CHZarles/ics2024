@@ -42,9 +42,11 @@ void *malloc(size_t size) {
   //   panic() -> putchar() -> (glibc) -> malloc() -> panic()
 #if !(defined(__ISA_NATIVE__) && defined(__NATIVE_USE_KLIB__))
   /* panic("Not implemented"); */
-
+  printf("Using klib malloc\n");
   // Check for overflow
   if ((uint8_t *)malloc_position + size > (uint8_t *)heap.end) {
+    printf("malloc failed,  malloc_position %x, size %d\n", malloc_position,
+           size);
     return NULL;
   }
 
