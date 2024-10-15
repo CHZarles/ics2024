@@ -102,6 +102,9 @@ void get_func_info(vaddr_t addr, vaddr_t *func_addr, char **func_name) {
 }
 
 int init_func_info(char *elf_file) {
+#ifdef NO_FUNC_TRACE
+  return 1;
+#endif
   if (elf_file == NULL) {
     printf("Elf file is NULL\n");
     return EXIT_FAILURE;
