@@ -619,4 +619,12 @@ int main(int argc, char **argv) {
 
 ```
 
+
 ```
+
+# pa3 record
+
+## 实现中断陷入
+
+imm 和 csr 的映射，参考 priv-isa-asciidoc.pdf ，page 17
+c 语言没用hash table的标准库，所以这里还不能直接用映射实现

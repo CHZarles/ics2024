@@ -23,6 +23,16 @@
 #define Mr vaddr_read
 #define Mw vaddr_write
 
+// get csr pointer
+word_t *CSR(uint32_t imm) {
+  switch (imm) {
+  case 0x305:
+    return &cpu.csrs.mtvec;
+  default:
+    break;
+  }
+  panic("unsupported csr %x", imm);
+}
 enum {
   TYPE_I,
   TYPE_U,
@@ -135,7 +145,8 @@ static int decode_exec(Decode *s) {
           printf("call csrrs\n")); // TODO: finish csrrs
 
   INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw, I,
-          printf("call csrrw\n")); // TODO: finish csrrw
+          printf("call csrrw\n");
+          word_t *t = CSR(imm); R(rd) = *t; *t = src1); // TODO: finish csrrw
 
   // 2.4.1. Integer Register-Immediate Instructions
   INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi, I,
