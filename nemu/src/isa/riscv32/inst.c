@@ -23,20 +23,42 @@
 #define Mr vaddr_read
 #define Mw vaddr_write
 
-// get csr pointer
-word_t *CSR(uint32_t imm) {
+static vaddr_t *csr_register(word_t imm) {
   switch (imm) {
-  case 0x305:
-    return &cpu.csrs.mtvec;
-  case 0x342:
-    return &(cpu.csrs.mcause);
   case 0x341:
     return &(cpu.csrs.mepc);
+  case 0x342:
+    return &(cpu.csrs.mcause);
+  case 0x300:
+    return &(cpu.csrs.mstatus);
+  case 0x305:
+    return &(cpu.csrs.mtvec);
   default:
-    break;
+    panic("Unknown csr");
   }
-  panic("unsupported csr %x", imm);
 }
+
+#define ECALL(dnpc)                                                            \
+  {                                                                            \
+    bool success;                                                              \
+    dnpc = (isa_raise_intr(isa_reg_str2val("a7", &success), s->pc));           \
+  }
+#define CSR(i) *csr_register(i)
+
+// get csr pointer
+/* word_t *CSR(uint32_t imm) { */
+/*   switch (imm) { */
+/*   case 0x305: */
+/*     return &cpu.csrs.mtvec; */
+/*   case 0x342: */
+/*     return &(cpu.csrs.mcause); */
+/*   case 0x341: */
+/*     return &(cpu.csrs.mepc); */
+/*   default: */
+/*     break; */
+/*   } */
+/*   panic("unsupported csr %x", imm); */
+/* } */
 enum {
   TYPE_I,
   TYPE_U,
@@ -143,15 +165,16 @@ static int decode_exec(Decode *s) {
           R(rd) = Mr(src1 + imm, 1));
 
   INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall, I,
-          printf("call ecall\n");
-          s->dnpc = isa_raise_intr(0, s->pc);); // TODO: finish ecall
+          ECALL(s->dnpc)); // TODO: finish ecall
 
-  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs, I,
-          printf("call csrrs\n")); // TODO: finish csrrs
-
-  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw, I,
-          printf("call csrrw\n");
-          word_t *t = CSR(imm); R(rd) = *t; *t = src1); // TODO: finish csrrw
+  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs, I, R(rd) = CSR(imm);
+          CSR(imm) |= src1);
+  INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw, I, R(rd) = CSR(imm);
+          CSR(imm) = src1);
+  /* INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw, I, */
+  /*         printf("call csrrw\n"); */
+  /*         word_t *t = CSR(imm); R(rd) = *t; *t = src1); // TODO: finish csrrw
+   */
 
   // 2.4.1. Integer Register-Immediate Instructions
   INSTPAT("??????? ????? ????? 000 ????? 00100 11", addi, I,
