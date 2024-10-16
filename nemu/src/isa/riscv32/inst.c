@@ -28,6 +28,10 @@ word_t *CSR(uint32_t imm) {
   switch (imm) {
   case 0x305:
     return &cpu.csrs.mtvec;
+  case 0x342:
+    return &(cpu.csrs.mcause);
+  case 0x341:
+    return &(cpu.csrs.mepc);
   default:
     break;
   }
