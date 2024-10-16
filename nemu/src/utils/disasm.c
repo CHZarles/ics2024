@@ -86,11 +86,10 @@ void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte) {
           insn[0].address, insn[0].mnemonic, insn[0].op_str);
   iringbuf_current_idx = (iringbuf_current_idx + 1) % IRING_BUF_SIZE;
 
-  /* for (size_t i = 0; i < count; i++) { */
-  /*   printf("0x%" PRIx64 ":\t%s\t\t%s\n", insn[i].address, insn[i].mnemonic,
-   */
-  /*          insn[i].op_str); */
-  /* } */
+  for (size_t i = 0; i < count; i++) {
+    printf("0x%" PRIx64 ":\t%s\t\t%s\n", insn[i].address, insn[i].mnemonic,
+           insn[i].op_str);
+  }
   if (nemu_state.state == NEMU_ABORT) {
     // display iringbuf
     printf(" ------------------------ \n");
