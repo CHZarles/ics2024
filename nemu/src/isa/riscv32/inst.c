@@ -138,7 +138,7 @@ static int decode_exec(Decode *s) {
   INSTPAT("??????? ????? ????? 100 ????? 00000 11", lbu, I,
           R(rd) = Mr(src1 + imm, 1));
 
-  INSTPAT("0000000 00000 00000 100 00000 11100 11", ecall, I,
+  INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall, I,
           printf("call ecall\n");
           s->dnpc = isa_raise_intr(0, s->pc);); // TODO: finish ecall
 
