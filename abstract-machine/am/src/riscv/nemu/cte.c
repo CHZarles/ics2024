@@ -23,9 +23,9 @@ Context *__am_irq_handle(Context *c) {
     /*   printf("x[%d] = %x\n", i + 1, c->gpr[i]); */
     /* } */
     // 2. display csr registers
-    printf("mcause = %x\n", c->mcause);
-    printf("mepc = %x\n", c->mepc);
-    printf("mstatus = %x\n", c->mstatus);
+    /* printf("mcause = %x\n", c->mcause); */
+    /* printf("mepc = %x\n", c->mepc); */
+    /* printf("mstatus = %x\n", c->mstatus); */
 
     c = user_handler(ev, c);
     assert(c != NULL);
