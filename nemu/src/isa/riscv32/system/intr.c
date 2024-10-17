@@ -23,7 +23,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   //  下面模拟硬件行为
 
   // 1.将当前PC值保存到mepc寄存器
-  if (epc == (uint32_t)(-1)) {
+  if (NO == (uint32_t)(-1)) { // yield
     cpu.csrs.mepc = epc + 4;
   } else {
     cpu.csrs.mepc = epc;
