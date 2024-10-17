@@ -38,6 +38,11 @@ static vaddr_t *csr_register(word_t imm) {
   }
 }
 
+void display_register() {
+  for (int i = 0; i < 32; i++) {
+    printf("x%d: %x\n", i, cpu.gpr[i]);
+  }
+}
 #define ECALL(dnpc)                                                            \
   { dnpc = (isa_raise_intr(1, s->pc)); }
 #define CSR(i) *csr_register(i)
@@ -162,6 +167,7 @@ static int decode_exec(Decode *s) {
           R(rd) = Mr(src1 + imm, 1));
 
   INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall, I,
+          display_register();
           ECALL(s->dnpc)); // TODO: finish ecall
 
   INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs, I, R(rd) = CSR(imm);
