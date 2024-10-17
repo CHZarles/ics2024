@@ -17,11 +17,11 @@ Context *__am_irq_handle(Context *c) {
     }
     // display Context *c
     // 1. display general registers
-    for (int i = 0; i < 32; i++) {
-      if (i == 1)
-        continue;
-      printf("x[%d] = %x\n", i + 1, c->gpr[i]);
-    }
+    /* for (int i = 0; i < 32; i++) { */
+    /*   if (i == 1) */
+    /*     continue; */
+    /*   printf("x[%d] = %x\n", i + 1, c->gpr[i]); */
+    /* } */
     // 2. display csr registers
     printf("mcause = %x\n", c->mcause);
     printf("mepc = %x\n", c->mepc);
