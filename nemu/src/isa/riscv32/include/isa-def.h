@@ -19,10 +19,10 @@
 #include <common.h>
 
 typedef struct {
-  word_t mcause;
-  word_t mtvec;
-  word_t mepc;
-  word_t mstatus;
+  word_t mcause;  // 发生异常的原因
+  word_t mtvec;   // 异常发生时处理器需要跳转到的地址
+  word_t mepc;    //  指向发生异常时的指令
+  word_t mstatus; // 它保存全局中断使能，以及许多其他的状态(处理器状态)
 } CSRs;
 
 typedef struct {

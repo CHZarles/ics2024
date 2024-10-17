@@ -628,3 +628,7 @@ int main(int argc, char **argv) {
 
 imm 和 csr 的映射，参考 priv-isa-asciidoc.pdf ，page 17
 c 语言没用hash table的标准库，所以这里还不能直接用映射实现
+
+## 保存上下文
+
+看文档的意思是，所有寄存器（mepc ,mstatus, 异常号, 通用寄存器， .... ) 的信息都要保存到堆栈

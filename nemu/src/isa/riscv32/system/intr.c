@@ -26,7 +26,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   cpu.csrs.mepc = epc;
   // 2.在mcause寄存器中设置异常号
   cpu.csrs.mcause = NO;
-  printf("raise intr: NO = %d, epc = 0x%x\n", NO, epc);
+  printf("raise intr: NO = %x, epc = 0x%x\n", NO, epc);
   // 3.从mtvec寄存器中取出异常入口地址,跳转到异常入口地址
   return cpu.csrs.mtvec;
 }
