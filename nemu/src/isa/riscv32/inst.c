@@ -46,7 +46,7 @@ void display_register() {
 #define ECALL(dnpc)                                                            \
   {                                                                            \
     bool success = false;                                                      \
-    dnpc = (isa_raise_intr(isa_reg_str2val("$a7", &success), s->pc));          \
+    dnpc = (isa_raise_intr(isa_reg_str2val("$a7", &success), s->snpc));        \
   }
 #define CSR(i) *csr_register(i)
 
