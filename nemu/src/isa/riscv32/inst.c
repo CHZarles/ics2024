@@ -249,7 +249,7 @@ static int decode_exec(Decode *s) {
           R(rd) = (int32_t)src1 * (int32_t)src2);
 
   INSTPAT("0011000 00010 00000 000 00000 11100 11", mret, R,
-          );// TODO: finish mret
+          s->dnpc = cpu.csrs.mepc); // TODO: finish mret
   // 13.2. Division Operations
   INSTPAT(
       "0000001 ????? ????? 100 ????? 01100 11", div, R,

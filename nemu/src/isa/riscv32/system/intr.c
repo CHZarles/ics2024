@@ -19,8 +19,14 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   /* TODO: Trigger an interrupt/exception with ``NO''.
    * Then return the address of the interrupt/exception vector.
    */
-  cpu.csrs.mcause = NO;
+  //  riscv32触发异常后硬件的响应过程如下
+  //  下面模拟硬件行为
+
+  // 1.将当前PC值保存到mepc寄存器
   cpu.csrs.mepc = epc;
+  // 2.在mcause寄存器中设置异常号
+  cpu.csrs.mcause = NO;
+  // 3.从mtvec寄存器中取出异常入口地址,跳转到异常入口地址
   return cpu.csrs.mtvec;
 }
 
