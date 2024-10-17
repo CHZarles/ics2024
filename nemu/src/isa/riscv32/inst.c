@@ -44,7 +44,10 @@ void display_register() {
   }
 }
 #define ECALL(dnpc)                                                            \
-  { dnpc = (isa_raise_intr(1, s->pc)); }
+  {                                                                            \
+    bool success = false;                                                      \
+    dnpc = (isa_raise_intr(isa_reg_str2val("$a7", &success), s->pc));          \
+  }
 #define CSR(i) *csr_register(i)
 
 // get csr pointer
@@ -167,7 +170,7 @@ static int decode_exec(Decode *s) {
           R(rd) = Mr(src1 + imm, 1));
 
   INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall, I,
-          display_register();
+          /* display_register(); */
           ECALL(s->dnpc)); // TODO: finish ecall
 
   INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs, I, R(rd) = CSR(imm);
