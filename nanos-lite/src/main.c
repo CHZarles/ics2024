@@ -13,19 +13,19 @@ int main() {
   Log("'Hello World!' from Nanos-lite");
   Log("Build time: %s, %s", __TIME__, __DATE__);
 
-  init_mm();
+  init_mm(); // 初始化内存管理???
 
-  init_device();
+  init_device(); // 初始化设备
 
-  init_ramdisk();
+  init_ramdisk(); // nemu 将一段内存当作磁盘使用
 
 #ifdef HAS_CTE
   init_irq();
 #endif
 
-  init_fs();
+  init_fs(); // 初始化文件系统
 
-  init_proc();
+  init_proc(); // 初始化进程
 
   Log("Finish initialization");
 
