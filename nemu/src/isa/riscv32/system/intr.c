@@ -23,7 +23,11 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   //  下面模拟硬件行为
 
   // 1.将当前PC值保存到mepc寄存器
-  cpu.csrs.mepc = epc;
+  if (epc == (uint32_t)(-1)) {
+    cpu.csrs.mepc = epc + 4;
+  } else {
+    cpu.csrs.mepc = epc;
+  }
   // 2.在mcause寄存器中设置异常号
   cpu.csrs.mcause = NO;
   /* printf("raise intr: NO = %x, epc = 0x%x\n", NO, epc); */
