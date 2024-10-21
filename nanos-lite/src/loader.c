@@ -37,6 +37,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Phdr ph_;
   ramdisk_read(&ph_, ehdr.e_phoff, sizeof(Elf_Phdr));
   int phnum = ehdr.e_phnum;
+  printf("phnum = %d\n", phnum);
   Elf_Phdr *ph = &ph_;
   // 3.load program
   for (int i = 0; i < phnum; i++) {
