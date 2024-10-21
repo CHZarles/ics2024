@@ -17,16 +17,22 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Ehdr ehdr;
   ramdisk_read(&ehdr, 0, sizeof(Elf_Phdr));
   // 1.check magic head number and ISA
-  assert(*(uint32_t *)(ehdr.e_ident) == 0x7f454c46);
+  printf("ehdr.e_ident = %x\n", *(uint32_t *)(ehdr.e_ident));
+  assert(*(uint32_t *)(ehdr.e_ident) == 0x464c457f);
 
+// 这些宏定义在xxx/libos/crt0/start.S中
 #if defined(__ISA_AM_NATIVE__)
-  // TODO
-  assert(ehdr.e_machine == EM_X86_64);
-#else // riscv
-  // TODO
-  assert(ehdr.e_machine == EM_RISCV);
+#define EXPECT_TYPE EM_X86_64
+#elif defined(__ISA_X86__)
+#define EXPECT_TYPE EM_386
+#elif defined(__ISA_RISCV32__) || defined(__ISA_RISCV64__)
+#define EXPECT_TYPE EM_RISCV
+#elif defined(__ISA_MIPS32__)
+#define EXPECT_TYPE EM_MIPS
+#else
+#error Unsupported ISA
 #endif
-
+  assert(ehdr.e_machine == EXPECT_TYPE);
   // 2.get program table header
   Elf_Phdr ph_;
   ramdisk_read(&ph_, ehdr.e_phoff, sizeof(Elf_Phdr));
