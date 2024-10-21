@@ -38,7 +38,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   // 2.get program table header
   int phnum = ehdr.e_phnum;
   Elf_Phdr ph[ehdr.e_phnum];
-  ramdisk_read(ph, ehdr.e_phoff, sizeof(Elf_Phdr));
+  ramdisk_read(ph, ehdr.e_phoff, sizeof(Elf_Phdr) * phnum);
   printf("phnum = %d\n", phnum);
   printf("self made\n");
   // 3.load program
