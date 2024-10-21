@@ -40,6 +40,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   Elf_Phdr ph[ehdr.e_phnum];
   ramdisk_read(&ph, ehdr.e_phoff, sizeof(Elf_Phdr));
   printf("phnum = %d\n", phnum);
+  printf("self made\n");
   // 3.load program
   for (int i = 0; i < phnum; i++) {
     if (ph[i].p_type == PT_LOAD) {
