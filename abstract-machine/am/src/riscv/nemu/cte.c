@@ -7,7 +7,6 @@ static Context *(*user_handler)(Event, Context *) = NULL;
 Context *__am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
-    printf("mcause = %x\n", c->mcause);
     switch (c->mcause) {
     case (uint32_t)(-1):
       ev.event = EVENT_YIELD;
