@@ -28,6 +28,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   } else if (NO == 1) { // system call
 
     printf("system call\n");
+    panic("system NO = 1 , debug\n");
     cpu.csrs.mepc = epc;
   } else {
     cpu.csrs.mepc = epc;
