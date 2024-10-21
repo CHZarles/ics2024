@@ -42,6 +42,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   for (int i = 0; i < phnum; i++) {
     if (ph[i].p_type == PT_LOAD) {
       uintptr_t va = ph[i].p_vaddr;
+      printf("va = %x\n", va);
       size_t off = ph[i].p_offset;
       size_t filesz = ph[i].p_filesz;
       size_t memsz = ph[i].p_memsz;
