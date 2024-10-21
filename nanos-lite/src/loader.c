@@ -12,8 +12,9 @@
 extern uint8_t ramdisk_start;
 extern uint8_t ramdisk_end;
 size_t ramdisk_read(void *buf, size_t offset, size_t len);
-#if 0
-static uintptr_t loader_bak(PCB *pcb, const char *filename) {
+#define compare
+#ifdef compare
+static uintptr_t loader(PCB *pcb, const char *filename) {
   /* TODO(); */
   Elf_Ehdr ehdr;
   ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
@@ -35,11 +36,10 @@ static uintptr_t loader_bak(PCB *pcb, const char *filename) {
 #endif
   assert(ehdr.e_machine == EXPECT_TYPE);
   // 2.get program table header
-  Elf_Phdr ph_;
-  ramdisk_read(&ph_, ehdr.e_phoff, sizeof(Elf_Phdr));
   int phnum = ehdr.e_phnum;
+  Elf_Phdr ph[ehdr.e_phnum];
+  ramdisk_read(&ph, ehdr.e_phoff, sizeof(Elf_Phdr));
   printf("phnum = %d\n", phnum);
-  Elf_Phdr *ph = &ph_;
   // 3.load program
   for (int i = 0; i < phnum; i++) {
     if (ph[i].p_type == PT_LOAD) {
@@ -58,8 +58,7 @@ static uintptr_t loader_bak(PCB *pcb, const char *filename) {
 
   return ehdr.e_entry;
 }
-#endif
-
+#else
 static uintptr_t loader(PCB *pcb, const char *filename) {
   // Elf_Ehdr ehdr; -
   // 声明一个Elf_Ehdr类型的结构体变量ehdr，用于存储ELF文件的头部信息。
@@ -88,6 +87,7 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   return ehdr.e_entry;
 }
 
+#endif
 void naive_uload(PCB *pcb, const char *filename) {
   uintptr_t entry = loader(pcb, filename);
   Log("Jump to entry = %p", entry);
