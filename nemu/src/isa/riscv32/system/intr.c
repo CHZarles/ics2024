@@ -25,6 +25,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   // 1.将当前PC值保存到mepc寄存器
   // NO 本质上是异常号
   if (NO == (uint32_t)(-1)) { // yield
+    printf("system call, NO = -1\n");
     cpu.csrs.mepc = epc + 4;
   } else if (NO == 1) { // system call
 
