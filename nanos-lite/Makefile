@@ -1,4 +1,4 @@
-#HAS_NAVY = 1
+HAS_NAVY = 1
 RAMDISK_FILE = build/ramdisk.img
 
 NAME = nanos-lite
@@ -15,6 +15,7 @@ endif
 	@touch $@
 
 ifeq ($(HAS_NAVY),)
+$(info "HAS_NAVY is not defined")
 files = $(RAMDISK_FILE) src/files.h src/syscall.h
 # create an empty file if it does not exist
 $(foreach f,$(files),$(if $(wildcard $f),, $(shell touch $f)))
@@ -26,6 +27,7 @@ endif
 
 update:
 	$(MAKE) -s -C $(NAVY_HOME) ISA=$(ISA) ramdisk
+	$(info "Updating $(NAME) with ramdisk.img from")
 	@ln -sf $(NAVY_HOME)/build/ramdisk.img $(RAMDISK_FILE)
 	@ln -sf $(NAVY_HOME)/build/ramdisk.h src/files.h
 	@ln -sf $(NAVY_HOME)/libs/libos/src/syscall.h src/syscall.h
