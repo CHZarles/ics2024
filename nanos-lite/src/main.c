@@ -20,6 +20,7 @@ int main() {
   init_ramdisk(); // nemu 将一段内存当作磁盘使用
 
 #ifdef HAS_CTE
+  printf("HAS_CTE\n");
   init_irq();
 #endif
 
