@@ -23,13 +23,14 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   //  下面模拟硬件行为
 
   // 1.将当前PC值保存到mepc寄存器
+  // NO 本质上是异常号
   if (NO == (uint32_t)(-1)) { // yield
     cpu.csrs.mepc = epc + 4;
   } else if (NO == 1) { // system call
 
     printf("system call\n");
     panic("system NO = 1 , debug\n");
-    cpu.csrs.mepc = epc;
+    cpu.csrs.mepc = epc + 4;
   } else {
     cpu.csrs.mepc = epc;
   }

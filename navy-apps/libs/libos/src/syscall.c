@@ -51,7 +51,7 @@ intptr_t _syscall_(intptr_t type, intptr_t a0, intptr_t a1, intptr_t a2) {
   register intptr_t _gpr3 asm(GPR3) = a1;
   register intptr_t _gpr4 asm(GPR4) = a2;
   register intptr_t ret asm(GPRx);
-  /* After expand the marcp */
+  /* After expand the marco */
   /* register intptr_t _gpr1 asm ("a7") = type; */
   /* register intptr_t _gpr2 asm ("a0") = a0; */
   /* register intptr_t _gpr3 asm ("a1") = a1; */
