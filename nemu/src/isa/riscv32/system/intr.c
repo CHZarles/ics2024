@@ -24,15 +24,25 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
 
   // 1.将当前PC值保存到mepc寄存器
   // NO 本质上是异常号
-  if (NO == (uint32_t)(-1)) { // yield
-    printf("system call, NO = -1\n");
+  /* if (NO == (uint32_t)(-1)) { // yield */
+  /*   printf("system call, NO = -1\n"); */
+  /*   cpu.csrs.mepc = epc + 4; */
+  /* } else if (NO == 1) { // system call */
+  /**/
+  /*   printf("system call, NO = 1\n"); */
+  /*   cpu.csrs.mepc = epc + 4; */
+  /* } else { */
+  /*   cpu.csrs.mepc = epc; */
+  /* } */
+  switch (NO) {
+  case (uint32_t)(-1):
+  case 1:
+  case 0:
     cpu.csrs.mepc = epc + 4;
-  } else if (NO == 1) { // system call
-
-    printf("system call, NO = 1\n");
-    cpu.csrs.mepc = epc + 4;
-  } else {
+    break;
+  default:
     cpu.csrs.mepc = epc;
+    break;
   }
   // 2.在mcause寄存器中设置异常号
   cpu.csrs.mcause = NO;
