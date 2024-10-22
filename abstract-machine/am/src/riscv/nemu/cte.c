@@ -13,6 +13,7 @@ Context *__am_irq_handle(Context *c) {
       break;
     case 0: // sys_exit
     case 1: // sys_yield
+    case 4: // sys_write
       ev.event = EVENT_SYSCALL;
       break;
     default:
