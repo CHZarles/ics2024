@@ -23,7 +23,7 @@ const char *regs[] = {"$0", "ra", "sp",  "gp",  "tp", "t0", "t1", "t2",
                       "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"};
 
 void isa_reg_display() {
-  Log("Call isa_reg_display()");
+  /* Log("Call isa_reg_display()"); */
   // 1.count the regs number
   int reg_nums = ARRLEN(cpu.gpr);
   // 2. loop the register
@@ -39,7 +39,7 @@ void isa_reg_display() {
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
-  Log("Call isa_reg_str2val(s=%s)", s);
+  /* Log("Call isa_reg_str2val(s=%s)", s); */
   // 1. check whether the input is valid register name
   word_t addr = -1;
   int reg_nums = ARRLEN(cpu.gpr);
