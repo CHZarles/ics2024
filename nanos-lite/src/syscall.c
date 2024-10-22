@@ -1,5 +1,24 @@
 #include "syscall.h"
 #include <common.h>
+
+void strace(Context *c) {
+
+  uintptr_t a[4];
+  a[0] = c->GPR1;
+  switch (a[0]) {
+  case 0: // SYS_exit
+    printf("exit(%d)\n", c->GPR2);
+    break;
+  case 1: // SYS_yield
+    printf("yield()\n");
+    break;
+  case 4: // SYS_write
+    printf("write(%d, %s, %d)\n", c->GPR2, (char *)c->GPR3, c->GPR4);
+    break;
+  default:
+    panic("Unhandled syscall ID = %d", a[0]);
+  }
+}
 void do_syscall(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
@@ -33,4 +52,6 @@ void do_syscall(Context *c) {
   default:
     panic("Unhandled syscall ID = %d", a[0]);
   }
+
+  strace(c);
 }
