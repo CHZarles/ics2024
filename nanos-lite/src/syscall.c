@@ -13,7 +13,7 @@ void strace(Context *c) {
     Log("yield()\n");
     break;
   case 4: // SYS_write
-    /* Log("write(%d, %s, %d)\n", c->GPR2, (char *)c->GPR3, c->GPR4); */
+    Log("write(%d, %s, %d)\n", c->GPR2, (char *)c->GPR3, c->GPR4);
     break;
   default:
     panic("Unhandled syscall ID = %d", a[0]);
