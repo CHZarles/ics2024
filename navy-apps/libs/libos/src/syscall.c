@@ -78,7 +78,7 @@ int _open(const char *path, int flags, mode_t mode) {
 
 int _write(int fd, void *buf, size_t count) {
   /* _exit(SYS_write); */
-  printf("syscall.c write(%d, %s, %d)\n", fd, (char *)buf, count);
+  /* printf("syscall.c write(%d, %s, %d)\n", fd, (char *)buf, count); */
   return _syscall_(SYS_write, fd, (intptr_t)buf, count);
 }
 
