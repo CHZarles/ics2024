@@ -173,9 +173,9 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall, I,
           /* display_register(); */
           // etrace
-          bool success = false;
-          printf("Ecall at pc = %x,  $a7 = %x\n", s->pc,
-                 isa_reg_str2val("$a7", &success));
+          /* bool success = false; */
+          /* printf("Ecall at pc = %x,  $a7 = %x\n", s->pc, */
+          /*        isa_reg_str2val("$a7", &success)); */
           ECALL(s->dnpc)); // TODO: finish ecall
 
   INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs, I, R(rd) = CSR(imm);
