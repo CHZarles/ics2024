@@ -7,10 +7,10 @@ void strace(Context *c) {
   a[0] = c->GPR1;
   switch (a[0]) {
   case 0: // SYS_exit
-    printf("exit(%d)\n", c->GPR2);
+    Log("exit(%d)\n", c->GPR2);
     break;
   case 1: // SYS_yield
-    printf("yield()\n");
+    Log("yield()\n");
     break;
   case 4: // SYS_write
     Log("write(%d, %s, %d)\n", c->GPR2, (char *)c->GPR3, c->GPR4);
