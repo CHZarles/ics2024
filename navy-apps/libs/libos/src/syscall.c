@@ -82,7 +82,25 @@ int _write(int fd, void *buf, size_t count) {
   return _syscall_(SYS_write, fd, (intptr_t)buf, count);
 }
 
-void *_sbrk(intptr_t increment) { return (void *)-1; }
+extern char _end; // defined by the linker ???
+static void *program_break = &_end;
+void *_sbrk(intptr_t increment) {
+  // 1.program break一开始的位置位于_end
+  void *old_program_break = program_break;
+  // 2.被调用时, 根据记录的program break位置和参数increment, 计算出新program
+  // break
+  program_break += increment;
+  // 3.通过SYS_brk系统调用来让操作系统设置新program break
+  intptr_t ret = __syscall__(SYS_brk, program_break, 0, 0);
+  // 4.若SYS_brk系统调用成功, 该系统调用会返回0, 此时更新之前记录的program
+  // break的位置, 并将旧program break的位置作为_sbrk()的返回值返回
+  if (ret == 0) {
+    return old_program_break;
+  }
+  // 5.若该系统调用失败, _sbrk()会返回-1
+  program_break -= increment;
+  return (void *)-1;
+}
 
 int _read(int fd, void *buf, size_t count) {
   _exit(SYS_read);

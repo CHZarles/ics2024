@@ -39,6 +39,7 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   case 1: // yield
   case 0: // sys_exit
   case 4: // sys_write
+  case 9: // sys_brk
     cpu.csrs.mepc = epc + 4;
     break;
   default:

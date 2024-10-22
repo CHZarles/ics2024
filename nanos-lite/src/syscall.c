@@ -48,6 +48,10 @@ void do_syscall(Context *c) {
     // 最后还要设置正确的返回值
     c->GPRx = ret;
     break;
+  case 9: // SYS_brk
+    // TODO ...
+    c->GPRx = 0;
+    break;
 
   default:
     panic("Unhandled syscall ID = %d", a[0]);
