@@ -11,7 +11,8 @@ Context *__am_irq_handle(Context *c) {
     case (uint32_t)(-1):
       ev.event = EVENT_YIELD;
       break;
-    case 1:
+    case 0: // sys_exit
+    case 1: // sys_yield
       ev.event = EVENT_SYSCALL;
       break;
     default:
