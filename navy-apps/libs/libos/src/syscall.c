@@ -86,7 +86,7 @@ extern char _end; // defined by the linker ???
 static void *program_break = &_end;
 void *_sbrk(intptr_t increment) {
   // 1.program break一开始的位置位于_end
-  void *old_program_break = program_break;
+  static void *old_program_break = program_break;
   // 2.被调用时, 根据记录的program break位置和参数increment, 计算出新program
   // break
   program_break += increment;
