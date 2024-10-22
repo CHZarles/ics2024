@@ -7,16 +7,16 @@ void strace(Context *c) {
   a[0] = c->GPR1;
   switch (a[0]) {
   case 0: // SYS_exit
-    Log("exit(%d)\n", c->GPR2);
+    Log("Call exit\n");
     break;
   case 1: // SYS_yield
-    Log("yield()\n");
+    Log("Call yield\n");
     break;
   case 4: // SYS_write
-    Log("write(%d, .. , %d)\n", c->GPR2, c->GPR4);
+    Log("Call SYS_write\n");
     break;
   case 9: // SYS_brk
-    Log("brk(%d)\n", c->GPR2);
+    Log("Call brk\n");
     break;
   default:
     panic("Unhandled syscall ID = %d", a[0]);
