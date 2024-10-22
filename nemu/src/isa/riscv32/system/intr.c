@@ -36,8 +36,8 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   /* } */
   switch (NO) {
   case (uint32_t)(-1):
-  case 1:
-  case 0:
+  case 1: // yield
+  case 0: // sys_exit
     cpu.csrs.mepc = epc + 4;
     break;
   default:
