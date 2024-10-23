@@ -12,7 +12,7 @@ typedef struct {
   size_t open_offset; // ADD: 当前文件打开的位置
 } Finfo;
 
-enum { FD_STDIN, FD_STDOUT, FD_STDERR, FD_FB, FD_EVENT };
+enum { FD_STDIN, FD_STDOUT, FD_STDERR, FD_EVENT, FD_FB };
 
 size_t invalid_read(void *buf, size_t offset, size_t len) {
   panic("should not reach here");
@@ -52,7 +52,6 @@ size_t fs_read(int fd, void *buf, size_t len) {
   /*   return 0; */
   /* } */
   if (file_table[fd].read != NULL) {
-    printf("read %s\n", file_table[fd].name);
     return file_table[fd].read(buf, file_table[fd].open_offset, len);
   }
   size_t read_len = len;
