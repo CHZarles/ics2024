@@ -16,12 +16,12 @@ int main() {
     /**/
     /* double_to_string(elapsed); */
     /* printf("elapsed : %s\n", buf); */
-    if (elapsed >= 500000) {
-      printf("0.5 seconds have passed\n");
+    if (elapsed >= 1000000) {
+      printf("1 seconds have passed\n");
       gettimeofday(&start, NULL); // reset start time
     }
     /* usleep(10000); // sleep for 10 milliseconds */
-    for (int i = 0; i < 1000; ++i)
+    for (int i = 0; i < 100000; ++i)
       ;
   }
 
