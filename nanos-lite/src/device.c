@@ -19,6 +19,8 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
   return len;
 }
 
+size_t serial_read(void *buf, size_t offset, size_t len) { return 0; }
+
 size_t events_read(void *buf, size_t offset, size_t len) { return 0; }
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) { return 0; }
