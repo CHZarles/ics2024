@@ -27,7 +27,7 @@ int main() {
     /*   printf("0.5 seconds have passed\n"); */
     /*   gettimeofday(&start, NULL); // reset start time */
     /* } */
-
+    printf("seconds");
     /* usleep(10000); // sleep for 10 milliseconds */
     for (int i = 0; i < 10000000; ++i)
       ;
