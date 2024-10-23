@@ -33,6 +33,7 @@ void strace(Context *c) {
     break;
   case SYS_gettimeofday:
     Log("Call gettimeofday");
+    break;
   default:
     panic("Unhandled syscall ID = %d", a[0]);
   }
