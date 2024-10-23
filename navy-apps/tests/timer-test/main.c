@@ -11,6 +11,7 @@ int main() {
     long microseconds = current.tv_usec - start.tv_usec;
     double elapsed = seconds + microseconds * 1e-6;
     /**/
+    printf("elapsed : %f\n", elapsed);
     if (elapsed >= 1) {
       printf("0.5 seconds have passed\n");
       gettimeofday(&start, NULL); // reset start time
