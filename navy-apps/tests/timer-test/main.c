@@ -7,10 +7,9 @@ int main() {
   struct timeval start, current;
   gettimeofday(&start, NULL);
   while (1) {
-    gettimeofday(&current, NULL);
     /* double elapsed = seconds + microseconds * 1e-6; */
     long elapsed = current.tv_sec * 1000000 + current.tv_usec;
-    -start.tv_sec * 1000000 - start.tv_usec;
+    -NDL_GetTicks();
 
     /* double elapsed = seconds; */
 
