@@ -30,6 +30,8 @@ void strace(Context *c) {
   case SYS_lseek:
     Log("Call lseek");
     break;
+  case SYS_gettimeofday:
+    Log("Call gettimeofday");
   default:
     panic("Unhandled syscall ID = %d", a[0]);
   }
@@ -110,6 +112,8 @@ void do_syscall(Context *c) {
     // TODO ...
     c->GPRx = 0;
     break;
+  }
+  case SYS_gettimeofday: {
   }
   default:
     panic("Unhandled syscall ID = %d", a[0]);

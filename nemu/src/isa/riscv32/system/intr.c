@@ -59,14 +59,15 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   /* } */
   switch (NO) {
   case (uint32_t)(-1):
-  case 1: // yield
-  case 0: // sys_exit
-  case 2: // sys_open
-  case 3: // sys_read
-  case 4: // sys_write
-  case 7: // sys_close
-  case 8: // sys_lseek
-  case 9: // sys_brk
+  case 1:  // yield
+  case 0:  // sys_exit
+  case 2:  // sys_open
+  case 3:  // sys_read
+  case 4:  // sys_write
+  case 7:  // sys_close
+  case 8:  // sys_lseek
+  case 9:  // sys_brk
+  case 19: // SYS_gettimeofday
     cpu.csrs.mepc = epc + 4;
     break;
   default:
