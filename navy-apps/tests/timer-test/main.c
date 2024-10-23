@@ -12,7 +12,7 @@ int main() {
     double elapsed = seconds + microseconds * 1e-6;
     /**/
     if (elapsed >= 0.5) {
-      printf("0.5 seconds have passed\n");
+      /* printf("0.5 seconds have passed\n"); */
       gettimeofday(&start, NULL); // reset start time
     }
 
