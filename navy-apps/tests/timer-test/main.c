@@ -8,19 +8,19 @@ int main() {
   gettimeofday(&start, NULL);
   while (1) {
     gettimeofday(&current, NULL);
-    long seconds = current.tv_sec - start.tv_sec;
-    long microseconds = current.tv_usec - start.tv_usec;
     /* double elapsed = seconds + microseconds * 1e-6; */
+    long elapsed = current.tv_sec * 1000000 + current.tv_usec;
+    -start.tv_sec * 1000000 - start.tv_usec;
+
     /* double elapsed = seconds; */
 
     /**/
     /* double_to_string(elapsed); */
     /* printf("elapsed : %s\n", buf); */
-    /* if (elapsed >= 1) { */
-    /*   printf("0.5 seconds have passed\n"); */
-    /*   gettimeofday(&start, NULL); // reset start time */
-    /* } */
-    printf("seconds: %ld, microseconds: %ld\n", seconds, microseconds);
+    if (elapsed >= 500000) {
+      printf("0.5 seconds have passed\n");
+      gettimeofday(&start, NULL); // reset start time
+    }
     /* usleep(10000); // sleep for 10 milliseconds */
     for (int i = 0; i < 1000; ++i)
       ;
