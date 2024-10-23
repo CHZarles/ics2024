@@ -16,7 +16,7 @@ void strace(Context *c) {
     Log("Call SYS_write\n");
     break;
   case SYS_brk: // SYS_brk
-    Log("Call brk\n");
+    Log("Call brk");
     break;
   case SYS_open:
     Log("Call open\n");
