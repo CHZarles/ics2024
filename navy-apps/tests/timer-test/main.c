@@ -17,7 +17,8 @@ int main() {
     gettimeofday(&current, NULL);
     long seconds = current.tv_sec - start.tv_sec;
     long microseconds = current.tv_usec - start.tv_usec;
-    double elapsed = seconds + microseconds * 1e-6;
+    /* double elapsed = seconds + microseconds * 1e-6; */
+    double elapsed = seconds;
 
     /**/
     double_to_string(elapsed);
