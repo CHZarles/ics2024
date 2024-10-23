@@ -3,7 +3,7 @@
 #include <sys/time.h>
 
 void strace(Context *c) {
-
+  return;
   uintptr_t a[4];
   a[0] = c->GPR1;
   switch (a[0]) {
