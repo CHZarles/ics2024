@@ -6,17 +6,29 @@ void strace(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
   switch (a[0]) {
-  case 0: // SYS_exit
+  case SYS_exit: // SYS_exit
     Log("Call exit\n");
     break;
-  case 1: // SYS_yield
+  case SYS_yield: // SYS_yield
     Log("Call yield\n");
     break;
-  case 4: // SYS_write
+  case SYS_write: // SYS_write
     Log("Call SYS_write\n");
     break;
-  case 9: // SYS_brk
+  case SYS_brk: // SYS_brk
     Log("Call brk\n");
+    break;
+  case SYS_open:
+    Log("Call open\n");
+    break;
+  case SYS_read:
+    Log("Call read\n");
+    break;
+  case SYS_close:
+    Log("Call close\n");
+    break;
+  case SYS_lseek:
+    Log("Call lseek\n");
     break;
   default:
     panic("Unhandled syscall ID = %d", a[0]);
