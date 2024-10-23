@@ -1,4 +1,5 @@
 #include <elf.h>
+#include <fs.h>
 #include <proc.h>
 
 #ifdef __LP64__
@@ -14,10 +15,16 @@ extern uint8_t ramdisk_end;
 size_t ramdisk_read(void *buf, size_t offset, size_t len);
 #define compare
 #ifdef compare
+extern int fs_open(const char *pathname, int flags, int mode);
+extern size_t fs_read(int fd, void *buf, size_t len);
+extern int fs_lseek(int fd, size_t offset, int whence);
 static uintptr_t loader(PCB *pcb, const char *filename) {
+  // Dev
+  int fd = fs_open(filename, 0, 0);
   /* TODO(); */
   Elf_Ehdr ehdr;
-  ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr));
+  /* ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr)); */
+  fs_read(fd, &ehdr, sizeof(Elf_Ehdr));
   // 1.check magic head number and ISA
   printf("ehdr.e_ident = %x\n", *(uint32_t *)(ehdr.e_ident));
   assert(*(uint32_t *)(ehdr.e_ident) == 0x464c457f);
@@ -38,7 +45,9 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
   // 2.get program table header
   int phnum = ehdr.e_phnum;
   Elf_Phdr ph[ehdr.e_phnum];
-  ramdisk_read(ph, ehdr.e_phoff, sizeof(Elf_Phdr) * phnum);
+  /* ramdisk_read(ph, ehdr.e_phoff, sizeof(Elf_Phdr) * phnum); */
+  fs_lseek(fd, ehdr.e_phoff, SEEK_SET);
+  assert(fs_read(fd, ph, sizeof(Elf_Phdr) * phnum) == sizeof(Elf_Phdr) * phnum);
   printf("phnum = %d\n", phnum);
   // 3.load program
   for (int i = 0; i < phnum; i++) {
@@ -49,7 +58,9 @@ static uintptr_t loader(PCB *pcb, const char *filename) {
       size_t off = ph[i].p_offset;
       size_t filesz = ph[i].p_filesz;
       size_t memsz = ph[i].p_memsz;
-      ramdisk_read((void *)va, off, filesz);
+      /* ramdisk_read((void *)va, off, filesz); */
+      fs_lseek(fd, off, SEEK_SET);
+      assert(fs_read(fd, (void *)va, filesz) == filesz);
       if (filesz < memsz) {
         memset((void *)(va + filesz), 0, memsz - filesz);
       }

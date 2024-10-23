@@ -23,7 +23,7 @@ void init_proc() {
   extern void naive_uload(PCB * pcb, const char *filename);
   Log("Initializing processes...");
 
-  naive_uload(NULL, NULL);
+  naive_uload(NULL, "/bin/hello"); // modify this line to load program
   // load program here
 }
 

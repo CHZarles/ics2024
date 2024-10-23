@@ -15,6 +15,29 @@
 
 #include <isa.h>
 
+/* enum { */
+/*   SYS_exit, */
+/*   SYS_yield, */
+/*   SYS_open, */
+/*   SYS_read, */
+/*   SYS_write, */
+/*   SYS_kill, */
+/*   SYS_getpid, */
+/*   SYS_close, */
+/*   SYS_lseek, */
+/*   SYS_brk, */
+/*   SYS_fstat, */
+/*   SYS_time, */
+/*   SYS_signal, */
+/*   SYS_execve, */
+/*   SYS_fork, */
+/*   SYS_link, */
+/*   SYS_unlink, */
+/*   SYS_wait, */
+/*   SYS_times, */
+/*   SYS_gettimeofday */
+/* }; */
+/**/
 word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   /* TODO: Trigger an interrupt/exception with ``NO''.
    * Then return the address of the interrupt/exception vector.
@@ -38,7 +61,10 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   case (uint32_t)(-1):
   case 1: // yield
   case 0: // sys_exit
+  case 3: // sys_read
   case 4: // sys_write
+  case 7: // sys_close
+  case 8: // sys_lseek
   case 9: // sys_brk
     cpu.csrs.mepc = epc + 4;
     break;
