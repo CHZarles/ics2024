@@ -14,8 +14,8 @@ int main() {
     /**/
     /* double_to_string(elapsed); */
     /* printf("elapsed : %s\n", buf); */
-    if (elapsed >= 1000) {
-      printf("1 seconds have passed\n");
+    if (elapsed >= 500) {
+      printf("0.5 seconds have passed\n");
       start = NDL_GetTicks();
     }
     /* usleep(10000); // sleep for 10 milliseconds */
