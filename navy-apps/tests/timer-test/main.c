@@ -5,7 +5,7 @@ int main() {
   // 通过gettimeofday()获取当前时间, 并每过0.5秒输出一句话.
   struct timeval start, current;
   gettimeofday(&start, NULL);
-
+  return 0;
   while (1) {
     gettimeofday(&current, NULL);
     long seconds = current.tv_sec - start.tv_sec;
