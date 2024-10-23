@@ -20,8 +20,9 @@ extern size_t fs_read(int fd, void *buf, size_t len);
 extern int fs_lseek(int fd, size_t offset, int whence);
 static uintptr_t loader(PCB *pcb, const char *filename) {
   // Dev
-  Log("load file %s", filename);
   int fd = fs_open(filename, 0, 0);
+
+  Log("load file %s, fd = %d", filename, fd);
   /* TODO(); */
   Elf_Ehdr ehdr;
   /* ramdisk_read(&ehdr, 0, sizeof(Elf_Ehdr)); */
