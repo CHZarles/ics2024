@@ -34,8 +34,9 @@ Context *__am_irq_handle(Context *c) {
     case (uint32_t)(-1):
       ev.event = EVENT_YIELD;
       break;
-    case 1: // yield
     case 0: // sys_exit
+    case 1: // yield
+    case 2: // sys_open
     case 3: // sys_read
     case 4: // sys_write
     case 7: // sys_close
