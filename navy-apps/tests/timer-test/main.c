@@ -4,12 +4,10 @@
 
 int main() {
   // 通过gettimeofday()获取当前时间, 并每过0.5秒输出一句话.
-  struct timeval start, current;
-  gettimeofday(&start, NULL);
+  uint32_t start = NDL_GetTicks();
   while (1) {
     /* double elapsed = seconds + microseconds * 1e-6; */
-    long elapsed = current.tv_sec * 1000000 + current.tv_usec;
-    -NDL_GetTicks();
+    long elapsed = NDL_GetTicks - start;
 
     /* double elapsed = seconds; */
 
@@ -18,10 +16,10 @@ int main() {
     /* printf("elapsed : %s\n", buf); */
     if (elapsed >= 1000000) {
       printf("1 seconds have passed\n");
-      gettimeofday(&start, NULL); // reset start time
+      start = NDL_GetTicks();
     }
     /* usleep(10000); // sleep for 10 milliseconds */
-    for (int i = 0; i < 10000; ++i)
+    for (int i = 0; i < 1000; ++i)
       ;
   }
 
