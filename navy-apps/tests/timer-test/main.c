@@ -7,8 +7,8 @@ int main() {
   gettimeofday(&start, NULL);
   while (1) {
     gettimeofday(&current, NULL);
-    /* long seconds = current.tv_sec - start.tv_sec; */
-    /* long microseconds = current.tv_usec - start.tv_usec; */
+    long seconds = current.tv_sec - start.tv_sec;
+    long microseconds = current.tv_usec - start.tv_usec;
     /* double elapsed = seconds + microseconds * 1e-6; */
     /**/
     /* if (elapsed >= 0.5) { */
