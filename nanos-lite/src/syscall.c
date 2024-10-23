@@ -125,6 +125,7 @@ void do_syscall(Context *c) {
     // 2. call io_read get us
     uint64_t us = io_read(AM_TIMER_UPTIME).us;
     // 3. convert us to timeval
+    printf("us = %d\n", us);
     tv->tv_sec = us / 1000000;
     tv->tv_usec = us % 1000000;
     // NOTE: alway return 0
