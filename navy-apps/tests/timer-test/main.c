@@ -12,10 +12,10 @@ int main() {
     double elapsed = seconds + microseconds * 1e-6;
     /**/
     printf("elapsed : %f\n", elapsed);
-    if (elapsed >= 1) {
-      printf("0.5 seconds have passed\n");
-      gettimeofday(&start, NULL); // reset start time
-    }
+    /* if (elapsed >= 1) { */
+    /*   printf("0.5 seconds have passed\n"); */
+    /*   gettimeofday(&start, NULL); // reset start time */
+    /* } */
 
     /* usleep(10000); // sleep for 10 milliseconds */
     for (int i = 0; i < 1000000000; ++i)
