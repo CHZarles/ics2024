@@ -1,5 +1,6 @@
 #include "syscall.h"
 #include <common.h>
+#include <sys/time.h>
 
 void strace(Context *c) {
 
@@ -114,6 +115,19 @@ void do_syscall(Context *c) {
     break;
   }
   case SYS_gettimeofday: {
+    // ioe read timer
+    // WARN!: 这里调用AM的uptime 和 linux 定义的gettimeofday 是不一样的
+    // 0. get timeval pointer
+    struct timeval *tv = (struct timeval *)c->GPR2;
+    // 1. get timezone pointer(not used)
+    /* struct timezone *tz = (struct timezone *)c->GPR3; */
+    // 2. call io_read get us
+    uint64_t us = io_read(AM_TIMER_UPTIME).us;
+    // 3. convert us to timeval
+    tv->tv_sec = us / 1000000;
+    tv->tv_usec = us % 1000000;
+    // NOTE: alway return 0
+    c->GPRx = 0;
   }
   default:
     panic("Unhandled syscall ID = %d", a[0]);
