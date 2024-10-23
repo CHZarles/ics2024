@@ -23,7 +23,7 @@ void init_proc() {
   extern void naive_uload(PCB * pcb, const char *filename);
   Log("Initializing processes...");
 
-  naive_uload(NULL, "/bin/timer-test"); // modify this line to load program
+  naive_uload(NULL, "/bin/event-test"); // modify this line to load program
   // load program here
 }
 

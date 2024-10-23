@@ -21,7 +21,21 @@ size_t serial_write(const void *buf, size_t offset, size_t len) {
 
 size_t serial_read(void *buf, size_t offset, size_t len) { return 0; }
 
-size_t events_read(void *buf, size_t offset, size_t len) { return 0; }
+size_t events_read(void *buf, size_t offset, size_t len) {
+
+  // 0. read keyboerd event from io_read keyboerd
+  // 1. write event to buf
+  /* 按下按键事件, 如kd RETURN表示按下回车键 */
+  /* 松开按键事件, 如ku A表示松开A键 */
+  AM_INPUT_KEYBRD_T kbd = io_read(AM_INPUT_KEYBRD);
+  if (kbd.keydown) {
+    sprintf(buf, "kd %s", keyname[kbd.keycode]);
+  } else {
+    sprintf(buf, "ku %s", keyname[kbd.keycode]);
+  }
+
+  return 0;
+}
 
 size_t dispinfo_read(void *buf, size_t offset, size_t len) { return 0; }
 
