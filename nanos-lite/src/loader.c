@@ -20,6 +20,7 @@ extern size_t fs_read(int fd, void *buf, size_t len);
 extern int fs_lseek(int fd, size_t offset, int whence);
 static uintptr_t loader(PCB *pcb, const char *filename) {
   // Dev
+  Log("load file %s", filename);
   int fd = fs_open(filename, 0, 0);
   /* TODO(); */
   Elf_Ehdr ehdr;
