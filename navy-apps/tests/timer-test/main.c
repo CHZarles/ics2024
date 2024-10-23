@@ -22,7 +22,7 @@ int main() {
     /* } */
     printf("seconds: %ld, microseconds: %ld\n", seconds, microseconds);
     /* usleep(10000); // sleep for 10 milliseconds */
-    for (int i = 0; i < 10000; ++i)
+    for (int i = 0; i < 1000; ++i)
       ;
   }
 
