@@ -128,6 +128,7 @@ void do_syscall(Context *c) {
     tv->tv_usec = us % 1000000;
     // NOTE: alway return 0
     c->GPRx = 0;
+    break;
   }
   default:
     panic("Unhandled syscall ID = %d", a[0]);
