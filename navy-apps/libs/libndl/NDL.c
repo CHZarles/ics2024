@@ -29,6 +29,7 @@ void NDL_OpenCanvas(int *w, int *h) {
   printf("enter NDL_OpenCanvas\n");
   // get screen width and height
   int fd = open("/proc/dispinfo", "r");
+  printf("Open disinfo\n");
   char buf[128];
   read(fd, buf, sizeof(buf));
   // 打开一张(*w) X (*h)的画布
