@@ -28,14 +28,16 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   /* 按下按键事件, 如kd RETURN表示按下回车键 */
   /* 松开按键事件, 如ku A表示松开A键 */
   AM_INPUT_KEYBRD_T kbd = io_read(AM_INPUT_KEYBRD);
-  if (kbd.keydown == 1) {
+  if (kbd.keydown) {
     // limit the length of buf
     snprintf(buf, len, "kd %s", keyname[kbd.keycode]);
     printf("Press key: %s\n", keyname[kbd.keycode]);
     return strlen(buf);
   } else {
-    if (kbd.keydown == AM_KEY_NONE)
+    if (kbd.keycode == AM_KEY_NONE) {
+      printf("No key pressed\n");
       return 0;
+    }
     snprintf(buf, len, "ku %s", keyname[kbd.keycode]);
     return strlen(buf);
   }
