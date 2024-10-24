@@ -27,6 +27,7 @@ int NDL_PollEvent(char *buf, int len) {
 static int canvas_w = 0, canvas_h = 0;
 void NDL_OpenCanvas(int *w, int *h) {
   // get screen width and height
+  printf("0");
   int fd = open("/proc/dispinfo", "r");
   char buf[128];
   printf("1");
