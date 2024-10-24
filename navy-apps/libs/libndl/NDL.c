@@ -32,6 +32,7 @@ void NDL_OpenCanvas(int *w, int *h) {
   printf("Open disinfo\n");
   char buf[128];
   read(fd, buf, sizeof(buf));
+  printf("read disinfo\n");
   // 打开一张(*w) X (*h)的画布
   // 如果*w和*h均为0, 则将系统全屏幕作为画布, 并将*w和*h分别设为系统屏幕的大小
   int sw, sh;
