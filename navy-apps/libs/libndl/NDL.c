@@ -76,7 +76,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   // 一行一行画
   for (int i = 0; i < h; ++i) {
     write(fd, pixels + i * w, w);
-    seek(fd, w, SEEK_CUR);
+    /* seek(fd, w, SEEK_CUR); */
   }
   fclose(fd);
 }

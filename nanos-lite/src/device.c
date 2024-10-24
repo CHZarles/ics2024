@@ -72,7 +72,7 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
   printf("Call io_write to draw\n");
   io_write(AM_GPU_FBDRAW, x, y, (uint32_t *)buf, len_, 1, true);
   // return what ????
-  return 0;
+  return len;
 }
 
 void init_device() {
