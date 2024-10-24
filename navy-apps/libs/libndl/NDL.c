@@ -27,16 +27,14 @@ int NDL_PollEvent(char *buf, int len) {
 static int canvas_w = 0, canvas_h = 0;
 void NDL_OpenCanvas(int *w, int *h) {
   // get screen width and height
-  printf("0");
   int fd = open("/proc/dispinfo", "r");
   char buf[128];
-  printf("1");
   read(fd, buf, sizeof(buf));
   // 打开一张(*w) X (*h)的画布
   // 如果*w和*h均为0, 则将系统全屏幕作为画布, 并将*w和*h分别设为系统屏幕的大小
   int sw, sh;
-  printf("2");
   sscanf(buf, "WIDTH: %d\nHEIGHT: %d", screen_w, screen_h);
+  printf("screen_w = %d, screen_h = %d\n", screen_w, screen_h);
   if (*w == 0 && *h == 0) {
     *w = screen_w;
     *h = screen_h;
