@@ -68,8 +68,6 @@ size_t fb_write(const void *buf, size_t offset, size_t len) {
   int len_ = x + len < cfg.width ? len : cfg.width - x;
   /* 调用IOE来进行绘图.  */
   /* 将frame buffer中的内容同步到屏幕上. */
-  printf("x = %d, y = %d, offset=%d, len = %d\n", x, y, offset, len_);
-  printf("Call io_write to draw\n");
   io_write(AM_GPU_FBDRAW, x, y, (uint32_t *)buf, len_, 1, true);
   // return what ????
   return len;
