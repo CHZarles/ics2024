@@ -24,12 +24,25 @@ int NDL_PollEvent(char *buf, int len) {
   return 0;
 }
 
+static int canvas_w = 0, canvas_h = 0;
 void NDL_OpenCanvas(int *w, int *h) {
   // get screen width and height
   int fd = open("/proc/dispinfo", "r");
   char buf[128];
   read(fd, buf, sizeof(buf));
-  sscanf(buf, "WIDTH: %d\nHEIGHT: %d", w, h);
+  // 打开一张(*w) X (*h)的画布
+  // 如果*w和*h均为0, 则将系统全屏幕作为画布, 并将*w和*h分别设为系统屏幕的大小
+  int sw, sh;
+  sscanf(buf, "WIDTH: %d\nHEIGHT: %d", screen_w, screen_h);
+  if (*w == 0 && *h == 0) {
+    *w = screen_w;
+    *h = screen_h;
+    canvas_h = screen_h;
+    canvas_w = screen_w;
+  } else {
+    canvas_w = *w;
+    canvas_h = *h;
+  }
 
   if (getenv("NWM_APP")) {
     int fbctl = 4;
@@ -53,7 +66,14 @@ void NDL_OpenCanvas(int *w, int *h) {
   }
 }
 
-void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {}
+void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+  int fd = open("/dev/fb", "w");
+  // 一行一行画
+  for (int x = 0; x < canvas_h; ++x) {
+    read(fd, pixels + x * canvas_w, canvas_w);
+  }
+  fclose(fd);
+}
 
 void NDL_OpenAudio(int freq, int channels, int samples) {}
 

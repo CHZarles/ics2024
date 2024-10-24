@@ -55,7 +55,23 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
   return ret;
 }
 
-size_t fb_write(const void *buf, size_t offset, size_t len) { return 0; }
+// 这里是将frame buffer看成了流式文件
+// 这里的 offset 是指的是要写入的位置（frame buffer的位置）
+size_t fb_write(const void *buf, size_t offset, size_t len) {
+
+  /* 0.从offset计算出frame buffer的数值对应的屏幕上的坐标 */
+  AM_GPU_CONFIG_T cfg = io_read(AM_GPU_CONFIG);
+  int x = offset % cfg.width;
+  int y = offset / cfg.width;
+  /* 1.len是要写入的像素的个数 */
+  // x + len < cfg.width ????
+  int len_ = x + len < cfg.width ? len : cfg.width - x;
+  /* 调用IOE来进行绘图.  */
+  /* 将frame buffer中的内容同步到屏幕上. */
+  io_write(AM_GPU_FBDRAW, x, y, (uint32_t *)buf, len_, 1, true);
+  // return what ????
+  return 0;
+}
 
 void init_device() {
   Log("Initializing devices...");
