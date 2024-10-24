@@ -75,7 +75,7 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   int fd = open("/dev/fb", "w");
   // 一行一行画
   for (int x = 0; x < canvas_h; ++x) {
-    read(fd, pixels + x * canvas_w, canvas_w);
+    write(fd, pixels + x * canvas_w, canvas_w);
   }
   fclose(fd);
 }
