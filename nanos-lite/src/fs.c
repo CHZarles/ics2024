@@ -44,6 +44,7 @@ size_t ramdisk_read(void *buf, size_t offset, size_t len);
 size_t ramdisk_write(const void *buf, size_t offset, size_t len);
 int fs_open(const char *pathname, int flags, int mode) {
   for (int i = 0; i < LENGTH(file_table); i++) {
+    printf("file_table[%d].name = %s\n", i, file_table[i].name);
     if (strcmp(pathname, file_table[i].name) == 0) {
       return i;
     }
