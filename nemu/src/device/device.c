@@ -56,9 +56,6 @@ void device_update() {
     case SDL_KEYUP: {
       uint8_t k = event.key.keysym.scancode;
       bool is_keydown = (event.key.type == SDL_KEYDOWN);
-      if (is_keydown) {
-        printf("Key down: %d\n", k);
-      }
       send_key(k, is_keydown);
       break;
     }
