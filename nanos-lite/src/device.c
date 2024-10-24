@@ -46,7 +46,14 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   return 0;
 }
 
-size_t dispinfo_read(void *buf, size_t offset, size_t len) { return 0; }
+size_t dispinfo_read(void *buf, size_t offset, size_t len) {
+  // 0. read width and height from ioe
+  AM_GPU_CONFIG_T cfg = io_read(AM_GPU_CONFIG);
+  // 1. write width and height to buf with specified format
+  int ret = sprintf(buf, "WIDTH: %d\nHEIGHT: %d\n", cfg.width, cfg.height);
+  // NOTE: 返回值不确定, 讲义没用规定
+  return ret;
+}
 
 size_t fb_write(const void *buf, size_t offset, size_t len) { return 0; }
 

@@ -25,6 +25,12 @@ int NDL_PollEvent(char *buf, int len) {
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
+  // get screen width and height
+  int fd = open("/proc/dispinfo", "r");
+  char buf[128];
+  read(fd, buf, sizeof(buf));
+  sscanf(buf, "WIDTH: %d\nHEIGHT: %d", w, h);
+
   if (getenv("NWM_APP")) {
     int fbctl = 4;
     fbdev = 5;
