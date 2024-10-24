@@ -30,17 +30,18 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   AM_INPUT_KEYBRD_T kbd = io_read(AM_INPUT_KEYBRD);
   if (kbd.keydown) {
     // limit the length of buf
-    snprintf(buf, len, "kd %s", keyname[kbd.keycode]);
+    int ret = snprintf(buf, len, "kd %s", keyname[kbd.keycode]);
     printf("Press key: %s\n", keyname[kbd.keycode]);
-    return strlen(buf);
+    return ret;
   } else {
     if (kbd.keycode == AM_KEY_NONE) {
       return 0;
     }
-    snprintf(buf, len, "ku %s", keyname[kbd.keycode]);
+
+    int ret = snprintf(buf, len, "ku %s", keyname[kbd.keycode]);
     printf("Release key: %s\n", keyname[kbd.keycode]);
 
-    return strlen(buf);
+    return ret;
   }
   return 0;
 }
