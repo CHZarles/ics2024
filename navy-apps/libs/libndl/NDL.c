@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,13 +69,19 @@ void NDL_OpenCanvas(int *w, int *h) {
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
-  int fd = open("/dev/fb", "w");
-  // 一行一行画
-  for (int i = 0; i < h; ++i) {
-    write(fd, pixels + i * w, w);
-    /* seek(fd, w, SEEK_CUR); */
+  int fd = open("/dev/fb", 0);
+  // 得到在屏幕上,让画布居中的左上角点
+  assert(screen_h >= h);
+  assert(screen_w >= w);
+  int my = (screen_h - h) / 2;
+  int mx = (screen_w - w) / 2;
+  // printf("NDL_DrawRect fd:%d\n", fd);
+  for (y = 0; y < h; y++) {
+    // printf("NDL_DrawRect mx: %d, y+my: %d\n", mx, y+my);
+    lseek(fd, (y + my) * screen_w + mx, SEEK_SET);
+    write(fd, (void *)&pixels[y * w], w);
   }
-  fclose(fd);
+  close(fd);
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {}
