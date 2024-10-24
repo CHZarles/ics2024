@@ -29,16 +29,13 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   /* 松开按键事件, 如ku A表示松开A键 */
   AM_INPUT_KEYBRD_T kbd = io_read(AM_INPUT_KEYBRD);
   if (kbd.keydown == 1) {
-    size_t key = kbd.keycode;
     sprintf(buf, "kd %s", keyname[kbd.keycode]);
-    // wait for keyup
-    while (1) {
-      kbd = io_read(AM_INPUT_KEYBRD);
-      if (kbd.keydown == 0 && kbd.keycode == AM_KEY_NONE) {
-        sprintf(buf, "ku %s", keyname[key]);
-        return 0;
-      }
-    }
+    return strlen(buf);
+  } else {
+    if (kbd.keydown == AM_KEY_NONE)
+      return 0;
+    sprintf(buf, "ku %s", keyname[kbd.keycode]);
+    return strlen(buf);
   }
   return 0;
 }
