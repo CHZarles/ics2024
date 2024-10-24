@@ -31,6 +31,7 @@ size_t events_read(void *buf, size_t offset, size_t len) {
   if (kbd.keydown == 1) {
     // limit the length of buf
     snprintf(buf, len, "kd %s", keyname[kbd.keycode]);
+    printf("Press key: %s\n", keyname[kbd.keycode]);
     return strlen(buf);
   } else {
     if (kbd.keydown == AM_KEY_NONE)
