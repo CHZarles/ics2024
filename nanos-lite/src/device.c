@@ -35,7 +35,6 @@ size_t events_read(void *buf, size_t offset, size_t len) {
     return strlen(buf);
   } else {
     if (kbd.keycode == AM_KEY_NONE) {
-      printf("No key pressed\n");
       return 0;
     }
     snprintf(buf, len, "ku %s", keyname[kbd.keycode]);
