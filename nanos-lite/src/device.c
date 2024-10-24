@@ -38,6 +38,8 @@ size_t events_read(void *buf, size_t offset, size_t len) {
       return 0;
     }
     snprintf(buf, len, "ku %s", keyname[kbd.keycode]);
+    printf("Release key: %s\n", keyname[kbd.keycode]);
+
     return strlen(buf);
   }
   return 0;
