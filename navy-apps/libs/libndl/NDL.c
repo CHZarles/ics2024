@@ -36,6 +36,7 @@ void NDL_OpenCanvas(int *w, int *h) {
   // 打开一张(*w) X (*h)的画布
   // 如果*w和*h均为0, 则将系统全屏幕作为画布, 并将*w和*h分别设为系统屏幕的大小
   int sw, sh;
+  printf("buf = %s\n", buf);
   sscanf(buf, "WIDTH: %d\nHEIGHT: %d", screen_w, screen_h);
   printf("screen_w = %d, screen_h = %d\n", screen_w, screen_h);
   if (*w == 0 && *h == 0) {
